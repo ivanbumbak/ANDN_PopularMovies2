@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">PopularMovies1</string>
+
+    <!-- contentDescription for ImageView for movie poster -->
+    <string name="movie_poster_desc">Movie Poster</string>
+
+    <!-- Placeholder text for movie title -->
+    <string name="movie_title_placeholder">Original title</string>
+
+    <!-- Release date label -->
+    <string name="release_date_label">Release date</string>
+
+    <!-- Placeholder text for release date of the movie -->
+    <string name="release_date_placeholder">02.03.2018.</string>
+
+    <!-- Average vote label -->
+    <string name="average_vote_label">Average vote</string>
+
+    <!-- Placeholder text for average votes of the movie -->
+    <string name="average_vote_placeholder">7.5</string>
+
+    <!-- Synopsis label -->
+    <string name="synopsis_label">Synopsis</string>
+
+    <!-- Placeholder text for synopsis of the movie -->
+    <string name="synopsis_placeholder">Some long description</string>
+
+    <!-- Label text for sort by popularity action in the menu -->
+    <string name="popularity_sort">Most popular</string>
+
+    <!-- Label text for sort by top rated movies -->
+    <string name="top_rated_sort">Top rated</string>
+
+    <!-- Movie ID -->
+    <string name="movie_id">ID</string>
+
+    <!-- Movie parcel list -->
+    <string name="movie_lsit">movieList</string>
+</resources>
