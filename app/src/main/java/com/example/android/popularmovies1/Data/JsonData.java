@@ -21,6 +21,10 @@ public class JsonData {
     private final static String VOTE_AVERAGE = "vote_average";
     private final static String OVERVIEW = "overview";
 
+    private final static String REVIEW_AUTHOR = "author";
+    private final static String REVIEW_CONTENT = "content";
+
+    //JSON for MovieData.class
     public static List<MovieData> getDataFromJson(String json) throws JSONException {
         List<MovieData> listOfMovies = new ArrayList<>();
 
@@ -40,9 +44,34 @@ public class JsonData {
                 listOfMovies.add(movieData);
             }
         } catch(JSONException e) {
+            e.printStackTrace();
             Log.e("DataJson", "JSON Data Error");
         }
 
         return listOfMovies;
+    }
+
+    //JSON Data for ReviewData.class
+    public static List<ReviewData> getReviewsFromJson(String json) throws JSONException {
+        List<ReviewData> listOfReviews = new ArrayList<>();
+
+        try {
+            JSONObject reviews = new JSONObject(json);
+            JSONArray reviewsArray = reviews.getJSONArray(QUERY_RESULTS);
+            for(int i = 0; i < reviewsArray.length(); i++) {
+                JSONObject jsonReview = reviewsArray.getJSONObject(i);
+                String author = jsonReview.optString(REVIEW_AUTHOR);
+                String content = jsonReview.optString(REVIEW_CONTENT);
+
+                ReviewData reviewData = new ReviewData(author, content);
+
+                listOfReviews.add(reviewData);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("DataJson", "JSON Data Error");
+        }
+
+        return listOfReviews;
     }
 }

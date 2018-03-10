@@ -20,8 +20,8 @@ import java.util.List;
 
 public class MovieAdapter extends ArrayAdapter<MovieData> {
 
-    private static final String BASE_URL = "http://image.tmdb.org/t/p/";
-    private static final String SIZE = "w185/";
+    private final static String BASE_URL = "http://image.tmdb.org/t/p/";
+    private final static String SIZE = "w185/";
     private Context mContext;
 
     public MovieAdapter(@NonNull Context context, @NonNull List<MovieData> movies) {

@@ -17,12 +17,33 @@ public class NetworkUtils {
 
     private final static String BASE_MOVIE_URL = "https://api.themoviedb.org/3/movie/";
     private final static String QUERY_API_KEY = "api_key";
-    private final static String apiKey = ""; //Add your own API key
+    private final static String API_KEY = ""; //Add your own API key
+    private final static String REVIEWS = "/reviews";
+    private final static String TRAILERS = "/videos";
+
 
     public static URL buildUrl(String sortMovie) {
         Uri builtUri = Uri.parse(BASE_MOVIE_URL).buildUpon()
                 .appendPath(sortMovie)
-                .appendQueryParameter(QUERY_API_KEY, apiKey)
+                .appendQueryParameter(QUERY_API_KEY, API_KEY)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+    //Review url
+    public static URL buildReviewUrl(long sortReview) {
+        Uri builtUri = Uri.parse(BASE_MOVIE_URL).buildUpon()
+                .appendPath(String.valueOf(sortReview))
+                .appendPath(REVIEWS)
+                .appendQueryParameter(QUERY_API_KEY, API_KEY)
                 .build();
 
         URL url = null;

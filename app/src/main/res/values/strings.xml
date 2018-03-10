@@ -4,6 +4,24 @@
     <!-- contentDescription for ImageView for movie poster -->
     <string name="movie_poster_desc">Movie Poster</string>
 
+    <!-- contentDescription for userName icon -->
+    <string name="username_desc">Username icon</string>
+
+    <!-- contentDescription for trailer image -->
+    <string name="trailer_desc">Movie trailer</string>
+
+    <!-- Movie ID -->
+    <string name="movie_id">movieID</string>
+
+    <!-- Movie parcel list -->
+    <string name="movie_lsit">movieList</string>
+
+    <!-- Review ID -->
+    <string name="review_id">reviewID</string>
+
+    <!-- Review parcel list -->
+    <string name="review_list">reviewList</string>
+
     <!-- Placeholder text for movie title -->
     <string name="movie_title_placeholder">Original title</string>
 
@@ -31,9 +49,15 @@
     <!-- Label text for sort by top rated movies -->
     <string name="top_rated_sort">Top rated</string>
 
-    <!-- Movie ID -->
-    <string name="movie_id">ID</string>
+    <!-- Username TextView -->
+    <string name="username">userName</string>
 
-    <!-- Movie parcel list -->
-    <string name="movie_lsit">movieList</string>
+    <!-- Review TextView -->
+    <string name="review">Review text</string>
+
+    <!-- Label for reviews in activity_movie_detaily.xml -->
+    <string name="review_label">Review</string>
+
+    <!-- Label for movie trailers -->
+    <string name="trailers_label">Trailers</string>
 </resources>

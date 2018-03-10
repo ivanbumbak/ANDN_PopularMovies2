@@ -37,7 +37,7 @@ public class MovieAsyncTask extends AsyncTask<String, Void, List<MovieData>> {
             movieList = JsonData.getDataFromJson(rawData);
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("AsyncTask", "Error in AsyncTask");
+            Log.e("MovieAsyncTask", "Error in MovieAsyncTask");
         } catch (JSONException e) {
             e.printStackTrace();
             Log.e("JSONAsync", "JSON problem");
