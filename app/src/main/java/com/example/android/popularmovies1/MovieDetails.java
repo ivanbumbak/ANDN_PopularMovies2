@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.example.android.popularmovies1.Adapter.ReviewAdapter;
 import com.example.android.popularmovies1.Data.MovieData;
 import com.example.android.popularmovies1.Data.ReviewData;
+import com.example.android.popularmovies1.Utils.ReviewAsyncTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -24,9 +25,7 @@ public class MovieDetails extends AppCompatActivity {
     private final static String BASE_URL = "http://image.tmdb.org/t/p/";
     private final static String SIZE = "w185/";
 
-    public static final String DETAIL = "detail_movie";
-
-    private List<ReviewData> mReviewList;
+    private ArrayList<ReviewData> mReviewList;
 
     private ReviewAdapter mReviewAdapter;
 
@@ -55,12 +54,8 @@ public class MovieDetails extends AppCompatActivity {
         displayMovieDetail();
 
         //Review RecycleView
-        mReviewList = new ArrayList<>();
-        mReviewAdapter = new ReviewAdapter(this, mReviewList);
-        LinearLayoutManager layoutManagerReview = new LinearLayoutManager(this,
-                LinearLayoutManager.VERTICAL, false);
-        mReviewRecycle.setLayoutManager(layoutManagerReview);
-        mReviewRecycle.setAdapter(mReviewAdapter);
+        displayReviews();
+
     }
 
     /* Method for displaying the info about movies in activity details
@@ -83,5 +78,19 @@ public class MovieDetails extends AppCompatActivity {
         mReleaseDate.setText(movieData.getReleaseDate());
         mAverageVote.setText(Double.toString(movieData.getRating()));
         mSynopsis.setText(movieData.getSynopsis());
+    }
+
+    private void displayReviews() {
+        mReviewList = new ArrayList<>();
+        mReviewAdapter = new ReviewAdapter(this, mReviewList);
+
+        LinearLayoutManager layoutManagerReview = new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false);
+        mReviewRecycle.setLayoutManager(layoutManagerReview);
+        mReviewRecycle.setHasFixedSize(true);
+        mReviewRecycle.setAdapter(mReviewAdapter);
+
+        ReviewAsyncTask reviewAsyncTask = new ReviewAsyncTask();
+        reviewAsyncTask.execute();
     }
 }

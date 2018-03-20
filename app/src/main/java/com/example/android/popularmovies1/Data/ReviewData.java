@@ -4,53 +4,53 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by the Bumbs on 07/03/2018.
+ * Created by the Bumbs on 15/03/2018.
  */
 
 public class ReviewData implements Parcelable {
 
-    private String mReviewAuthor, mReviewContent;
+    private String mAuthor, mContent;
 
-    public static final Parcelable.Creator CREATOR = new Creator() {
+    public ReviewData(String author, String content) {
+        this.mAuthor = author;
+        this.mContent = content;
+    }
+
+    private ReviewData(Parcel in) {
+        mAuthor = in.readString();
+        mContent = in.readString();
+    }
+
+    public static final Creator<ReviewData> CREATOR = new Creator<ReviewData>() {
         @Override
-        public Object createFromParcel(Parcel source) {
-            return new ReviewData(source);
+        public ReviewData createFromParcel(Parcel in) {
+            return new ReviewData(in);
         }
 
         @Override
-        public ReviewData[] newArray(int i) {
-            return new ReviewData[i];
+        public ReviewData[] newArray(int size) {
+            return new ReviewData[size];
         }
     };
 
-    public ReviewData(String reviewAuthor, String reviewContent) {
-        this.mReviewAuthor = reviewAuthor;
-        this.mReviewContent = reviewContent;
-    }
-
-    protected ReviewData(Parcel in) {
-        mReviewAuthor = in.readString();
-        mReviewContent = in.readString();
-    }
-
     //Getter method for review author
-    public String getReviewAuthor() {
-        return mReviewAuthor;
+    public String getAuthor() {
+        return mAuthor;
     }
 
     //Setter method for review author
-    public void setReviewAuthor(String reviewAuthor) {
-        this.mReviewAuthor = reviewAuthor;
+    public void setAuthor(String author) {
+        this.mAuthor = author;
     }
 
     //Getter method for review content
-    public String getReviewContent() {
-        return mReviewContent;
+    public String getContent() {
+        return mContent;
     }
 
     //Setter method for review content
-    public void setReviewContent(String reviewContent) {
-        this.mReviewContent = reviewContent;
+    public void setContent(String content) {
+        this.mContent = content;
     }
 
     @Override
@@ -60,7 +60,7 @@ public class ReviewData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mReviewAuthor);
-        dest.writeString(mReviewContent);
+        dest.writeString(mAuthor);
+        dest.writeString(mContent);
     }
 }

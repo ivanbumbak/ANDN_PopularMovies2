@@ -24,7 +24,7 @@ public class JsonData {
     private final static String REVIEW_AUTHOR = "author";
     private final static String REVIEW_CONTENT = "content";
 
-    //JSON for MovieData.class
+    //JSON for Movie Details
     public static List<MovieData> getDataFromJson(String json) throws JSONException {
         List<MovieData> listOfMovies = new ArrayList<>();
 
@@ -51,9 +51,9 @@ public class JsonData {
         return listOfMovies;
     }
 
-    //JSON Data for ReviewData.class
-    public static List<ReviewData> getReviewsFromJson(String json) throws JSONException {
-        List<ReviewData> listOfReviews = new ArrayList<>();
+    //JSON for Review
+    public static ArrayList<ReviewData> getReviewFromJson(String json) throws JSONException {
+        ArrayList<ReviewData> listOfReviews = new ArrayList<>();
 
         try {
             JSONObject reviews = new JSONObject(json);
@@ -67,9 +67,9 @@ public class JsonData {
 
                 listOfReviews.add(reviewData);
             }
-        } catch (JSONException e) {
+        } catch(JSONException e) {
             e.printStackTrace();
-            Log.e("DataJson", "JSON Data Error");
+            Log.e("ReviewJson", "JSON Review Error");
         }
 
         return listOfReviews;
