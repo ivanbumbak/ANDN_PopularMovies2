@@ -17,13 +17,15 @@ import java.util.ArrayList;
 
 public class ReviewAsyncTask extends AsyncTask<String, Void, ArrayList<ReviewData>> {
 
+    private ReviewData mReviewData;
+
     @Override
     protected ArrayList<ReviewData> doInBackground(String... strings) {
         String rawData = "";
         ArrayList<ReviewData> reviewList = new ArrayList<>();
         try {
             rawData = NetworkUtils.getResponseFromHttpRequest(NetworkUtils
-                    .buildReviewUrl(strings[0], 0));
+                    .buildReviewUrl(String.valueOf(mReviewData)));
             reviewList = JsonData.getReviewFromJson(rawData);
         } catch (IOException e) {
             e.printStackTrace();

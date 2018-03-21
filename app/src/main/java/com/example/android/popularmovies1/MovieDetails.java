@@ -54,8 +54,16 @@ public class MovieDetails extends AppCompatActivity {
         displayMovieDetail();
 
         //Review RecycleView
-        displayReviews();
+        mReviewList = new ArrayList<>();
+        mReviewAdapter = new ReviewAdapter(this, mReviewList);
 
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        mReviewRecycle.setLayoutManager(layoutManager);
+        mReviewRecycle.setHasFixedSize(true);
+        mReviewRecycle.setAdapter(mReviewAdapter);
+
+        ReviewAsyncTask reviewAsyncTask = new ReviewAsyncTask();
+        reviewAsyncTask.execute();
     }
 
     /* Method for displaying the info about movies in activity details
@@ -78,19 +86,5 @@ public class MovieDetails extends AppCompatActivity {
         mReleaseDate.setText(movieData.getReleaseDate());
         mAverageVote.setText(Double.toString(movieData.getRating()));
         mSynopsis.setText(movieData.getSynopsis());
-    }
-
-    private void displayReviews() {
-        mReviewList = new ArrayList<>();
-        mReviewAdapter = new ReviewAdapter(this, mReviewList);
-
-        LinearLayoutManager layoutManagerReview = new LinearLayoutManager(this,
-                LinearLayoutManager.VERTICAL, false);
-        mReviewRecycle.setLayoutManager(layoutManagerReview);
-        mReviewRecycle.setHasFixedSize(true);
-        mReviewRecycle.setAdapter(mReviewAdapter);
-
-        ReviewAsyncTask reviewAsyncTask = new ReviewAsyncTask();
-        reviewAsyncTask.execute();
     }
 }
