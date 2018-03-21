@@ -17,7 +17,15 @@ import java.util.ArrayList;
 
 public class ReviewAsyncTask extends AsyncTask<String, Void, ArrayList<ReviewData>> {
 
-    private ReviewData mReviewData;
+    public interface ReviewResponse {
+        void finishedReview(ArrayList<ReviewData> output);
+    }
+
+    private ReviewResponse reviewResponse = null;
+
+    public ReviewAsyncTask(ReviewResponse reviewResponse) {
+        this.reviewResponse = reviewResponse;
+    }
 
     @Override
     protected ArrayList<ReviewData> doInBackground(String... strings) {
@@ -25,7 +33,7 @@ public class ReviewAsyncTask extends AsyncTask<String, Void, ArrayList<ReviewDat
         ArrayList<ReviewData> reviewList = new ArrayList<>();
         try {
             rawData = NetworkUtils.getResponseFromHttpRequest(NetworkUtils
-                    .buildReviewUrl(String.valueOf(mReviewData)));
+                    .buildReviewUrl(String.valueOf(0)));
             reviewList = JsonData.getReviewFromJson(rawData);
         } catch (IOException e) {
             e.printStackTrace();
@@ -36,5 +44,10 @@ public class ReviewAsyncTask extends AsyncTask<String, Void, ArrayList<ReviewDat
         }
 
         return reviewList;
+    }
+
+    @Override
+    protected void onPostExecute(ArrayList<ReviewData> reviewData) {
+        reviewResponse.finishedReview(reviewData);
     }
 }

@@ -20,7 +20,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MovieDetails extends AppCompatActivity {
+public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.ReviewResponse {
 
     private final static String BASE_URL = "http://image.tmdb.org/t/p/";
     private final static String SIZE = "w185/";
@@ -62,8 +62,14 @@ public class MovieDetails extends AppCompatActivity {
         mReviewRecycle.setHasFixedSize(true);
         mReviewRecycle.setAdapter(mReviewAdapter);
 
-        ReviewAsyncTask reviewAsyncTask = new ReviewAsyncTask();
+        ReviewAsyncTask reviewAsyncTask = new ReviewAsyncTask(this);
         reviewAsyncTask.execute();
+    }
+
+    @Override
+    public void finishedReview(ArrayList<ReviewData> output) {
+        mReviewList.addAll(output);
+        mReviewAdapter.notifyDataSetChanged();
     }
 
     /* Method for displaying the info about movies in activity details

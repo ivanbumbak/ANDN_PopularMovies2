@@ -15,6 +15,7 @@ import java.util.List;
 
 public class JsonData {
     private final static String QUERY_RESULTS = "results";
+    private final static String MOVIE_ID = "id";
     private final static String POSTER_PATH = "poster_path";
     private final static String ORIGINAL_TITLE = "title";
     private final static String RELEASE_DATE = "release_date";
@@ -33,13 +34,14 @@ public class JsonData {
             JSONArray moviesArray = movies.getJSONArray(QUERY_RESULTS);
             for(int i = 0; i < moviesArray.length(); i++) {
                 JSONObject jsonMovie = moviesArray.getJSONObject(i);
+                int id = jsonMovie.optInt(MOVIE_ID);
                 String poster = jsonMovie.optString(POSTER_PATH);
                 String title = jsonMovie.optString(ORIGINAL_TITLE);
                 String releaseDate = jsonMovie.optString(RELEASE_DATE);
                 double rating = jsonMovie.optDouble(VOTE_AVERAGE);
                 String synopsis = jsonMovie.optString(OVERVIEW);
 
-                MovieData movieData = new MovieData(poster, title, releaseDate, rating, synopsis);
+                MovieData movieData = new MovieData(id, poster, title, releaseDate, rating, synopsis);
 
                 listOfMovies.add(movieData);
             }
