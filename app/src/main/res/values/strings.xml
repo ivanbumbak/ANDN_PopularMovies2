@@ -55,6 +55,9 @@
     <!-- Message if reviews don't exist -->
     <string name="no_reviews">There are no any reviews, yet!</string>
 
+    <!-- Message if reviews don't exist for authors -->
+    <string name="no_authors">No authors, yet!</string>
+
     <!-- Label for movie trailers -->
     <string name="trailers_label">Trailers</string>
 </resources>
