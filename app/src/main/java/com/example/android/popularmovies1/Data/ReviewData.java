@@ -1,13 +1,10 @@
 package com.example.android.popularmovies1.Data;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 /**
  * Created by the Bumbs on 15/03/2018.
  */
 
-public class ReviewData implements Parcelable {
+public class ReviewData {
 
     private String mAuthor, mContent;
 
@@ -15,23 +12,6 @@ public class ReviewData implements Parcelable {
         this.mAuthor = author;
         this.mContent = content;
     }
-
-    private ReviewData(Parcel in) {
-        mAuthor = in.readString();
-        mContent = in.readString();
-    }
-
-    public static final Creator<ReviewData> CREATOR = new Creator<ReviewData>() {
-        @Override
-        public ReviewData createFromParcel(Parcel in) {
-            return new ReviewData(in);
-        }
-
-        @Override
-        public ReviewData[] newArray(int size) {
-            return new ReviewData[size];
-        }
-    };
 
     //Getter method for review author
     public String getAuthor() {
@@ -51,16 +31,5 @@ public class ReviewData implements Parcelable {
     //Setter method for review content
     public void setContent(String content) {
         this.mContent = content;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mAuthor);
-        dest.writeString(mContent);
     }
 }

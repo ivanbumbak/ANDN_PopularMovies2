@@ -10,15 +10,16 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by the Bumbs on 15/03/2018.
  */
 
-public class ReviewAsyncTask extends AsyncTask<String, Void, ArrayList<ReviewData>> {
+public class ReviewAsyncTask extends AsyncTask<String, Void, List<ReviewData>> {
 
     public interface ReviewResponse {
-        void finishedReview(ArrayList<ReviewData> output);
+        void finishedReview(List<ReviewData> output);
     }
 
     private ReviewResponse reviewResponse = null;
@@ -28,12 +29,12 @@ public class ReviewAsyncTask extends AsyncTask<String, Void, ArrayList<ReviewDat
     }
 
     @Override
-    protected ArrayList<ReviewData> doInBackground(String... strings) {
+    protected List<ReviewData> doInBackground(String... strings) {
         String rawData = "";
-        ArrayList<ReviewData> reviewList = new ArrayList<>();
+        List<ReviewData> reviewList = new ArrayList<>();
         try {
             rawData = NetworkUtils.getResponseFromHttpRequest(NetworkUtils
-                    .buildReviewUrl(String.valueOf(0)));
+                    .buildReviewUrl(strings[0]));
             reviewList = JsonData.getReviewFromJson(rawData);
         } catch (IOException e) {
             e.printStackTrace();
@@ -47,7 +48,7 @@ public class ReviewAsyncTask extends AsyncTask<String, Void, ArrayList<ReviewDat
     }
 
     @Override
-    protected void onPostExecute(ArrayList<ReviewData> reviewData) {
+    protected void onPostExecute(List<ReviewData> reviewData) {
         reviewResponse.finishedReview(reviewData);
     }
 }

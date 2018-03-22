@@ -17,9 +17,9 @@ public class NetworkUtils {
 
     private final static String BASE_MOVIE_URL = "https://api.themoviedb.org/3/movie/";
     private final static String QUERY_API_KEY = "api_key";
-    private final static String API_KEY = ""; //Add your own API key
+    private final static String API_KEY = "9f186b1b913b2868bf156cfcbd6a3761"; //Add your own API key
 
-    private final static String REVIEW = "/reviews";
+    private final static String REVIEW = "reviews";
 
     //URL builder for movie details
     public static URL buildUrl(String sortMovie) {
@@ -40,7 +40,9 @@ public class NetworkUtils {
 
     //URL builder for reviews
     public static URL buildReviewUrl(String id) {
-        Uri builtUri = Uri.parse(BASE_MOVIE_URL + id + REVIEW).buildUpon()
+        Uri builtUri = Uri.parse(BASE_MOVIE_URL).buildUpon()
+                .appendPath(id)
+                .appendPath(REVIEW)
                 .appendQueryParameter(QUERY_API_KEY, API_KEY)
                 .build();
 

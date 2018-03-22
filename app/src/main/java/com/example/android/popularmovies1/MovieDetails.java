@@ -25,7 +25,7 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
     private final static String BASE_URL = "http://image.tmdb.org/t/p/";
     private final static String SIZE = "w185/";
 
-    private ArrayList<ReviewData> mReviewList;
+    private List<ReviewData> mReviewList;
 
     private ReviewAdapter mReviewAdapter;
 
@@ -51,25 +51,42 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
         setContentView(R.layout.activity_movie_details);
         ButterKnife.bind(this);
 
+        /* Movie ID parameters for showing reviews and trailers
+         * @param int movieId is the id of the movie
+         * @param List<MovieData> movieList is data set for movie details
+         * @param int id gets movie ID from MovieData class */
+        int movieId = (Integer) getIntent().getExtras().get(getString(R.string.movie_id));
+
+        List<MovieData> movieList;
+        movieList = getIntent().getParcelableArrayListExtra(getString(R.string.movie_lsit));
+
+        MovieData movieData = movieList.get(movieId);
+        int id = movieData.getMovieId();
+
+        /* Calling method for displaying movie details */
         displayMovieDetail();
 
-        //Review RecycleView
-        mReviewList = new ArrayList<>();
-        mReviewAdapter = new ReviewAdapter(this, mReviewList);
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        mReviewRecycle.setLayoutManager(layoutManager);
-        mReviewRecycle.setHasFixedSize(true);
-        mReviewRecycle.setAdapter(mReviewAdapter);
+        //Show reviews in RecycleView
+        String reviewId = String.valueOf(id);
 
         ReviewAsyncTask reviewAsyncTask = new ReviewAsyncTask(this);
-        reviewAsyncTask.execute();
+        reviewAsyncTask.execute(reviewId);
+
+        mReviewList = new ArrayList<>();
+
+        mReviewAdapter = new ReviewAdapter(this, mReviewList);
+
+        mReviewRecycle.setLayoutManager(new LinearLayoutManager(this));
+        mReviewRecycle.setHasFixedSize(true);
+        mReviewRecycle.setAdapter(mReviewAdapter);
     }
 
     @Override
-    public void finishedReview(ArrayList<ReviewData> output) {
-        mReviewList.addAll(output);
-        mReviewAdapter.notifyDataSetChanged();
+    public void finishedReview(List<ReviewData> output) {
+        mReviewList.clear();
+        mReviewList = output;
+        mReviewAdapter = new ReviewAdapter(this, mReviewList);
+        mReviewRecycle.setAdapter(mReviewAdapter);
     }
 
     /* Method for displaying the info about movies in activity details
@@ -79,12 +96,12 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
      * @param mAverageVote sets average rating grade of the movie
      * @param mSynopsis sets plot of the movie */
     private void displayMovieDetail() {
-        int idMovie = (Integer) getIntent().getExtras().get(getString(R.string.movie_id));
+        int movieId = (Integer) getIntent().getExtras().get(getString(R.string.movie_id));
 
         List<MovieData> movieList;
         movieList = getIntent().getParcelableArrayListExtra(getString(R.string.movie_lsit));
 
-        MovieData movieData = movieList.get(idMovie);
+        MovieData movieData = movieList.get(movieId);
 
         Picasso.with(mContext).load(BASE_URL + SIZE +
                 movieData.getPoster()).into(mMoviePoster);

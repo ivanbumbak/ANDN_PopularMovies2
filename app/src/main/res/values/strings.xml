@@ -16,12 +16,6 @@
     <!-- Movie parcel list -->
     <string name="movie_lsit">movieList</string>
 
-    <!-- Review ID -->
-    <string name="review_id">reviewID</string>
-
-    <!-- Review parcel list -->
-    <string name="review_list">reviewList</string>
-
     <!-- Placeholder text for movie title -->
     <string name="movie_title_placeholder">Original title</string>
 
@@ -57,6 +51,9 @@
 
     <!-- Label for reviews in activity_movie_detaily.xml -->
     <string name="review_label">Review</string>
+
+    <!-- Message if reviews don't exist -->
+    <string name="no_reviews">There are no any reviews, yet!</string>
 
     <!-- Label for movie trailers -->
     <string name="trailers_label">Trailers</string>

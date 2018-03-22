@@ -54,20 +54,28 @@ public class JsonData {
     }
 
     //JSON for Review
-    public static ArrayList<ReviewData> getReviewFromJson(String json) throws JSONException {
-        ArrayList<ReviewData> listOfReviews = new ArrayList<>();
+    public static List<ReviewData> getReviewFromJson(String json) throws JSONException {
+        List<ReviewData> listOfReviews = new ArrayList<>();
 
         try {
             JSONObject reviews = new JSONObject(json);
             JSONArray reviewsArray = reviews.getJSONArray(QUERY_RESULTS);
-            for(int i = 0; i < reviewsArray.length(); i++) {
-                JSONObject jsonReview = reviewsArray.getJSONObject(i);
-                String author = jsonReview.optString(REVIEW_AUTHOR);
-                String content = jsonReview.optString(REVIEW_CONTENT);
+            if(reviewsArray.length() == 0) {
+                String author = "No authors, yet";
+                String content = "There are no any reviews, yet!";
 
                 ReviewData reviewData = new ReviewData(author, content);
-
                 listOfReviews.add(reviewData);
+            } else {
+                for(int i = 0; i < reviewsArray.length(); i++) {
+                    JSONObject jsonReview = reviewsArray.getJSONObject(i);
+                    String author = jsonReview.optString(REVIEW_AUTHOR);
+                    String content = jsonReview.optString(REVIEW_CONTENT);
+
+                    ReviewData reviewData = new ReviewData(author, content);
+
+                    listOfReviews.add(reviewData);
+                }
             }
         } catch(JSONException e) {
             e.printStackTrace();
