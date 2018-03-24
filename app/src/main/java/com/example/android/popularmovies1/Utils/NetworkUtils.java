@@ -17,7 +17,7 @@ public class NetworkUtils {
 
     private final static String BASE_MOVIE_URL = "https://api.themoviedb.org/3/movie/";
     private final static String QUERY_API_KEY = "api_key";
-    private final static String API_KEY = ""; //Add your own API key
+    private final static String API_KEY = "9f186b1b913b2868bf156cfcbd6a3761"; //Add your own API key
 
     private final static String REVIEW = "reviews";
     private final static String TRAILER = "videos";

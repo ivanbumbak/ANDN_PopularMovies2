@@ -32,9 +32,6 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
     private final static String BASE_URL = "http://image.tmdb.org/t/p/";
     private final static String SIZE = "w185/";
 
-    private final static String THUMBNAIL_PATH = "http://img.youtube.com/vi/";
-    private final static String THUMB_PARAM = "/0.jpg";
-
     private List<ReviewData> mReviewList;
     private List<TrailerData> mTrailerList;
 
@@ -111,7 +108,6 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
         mTrailerRecycle.setHasFixedSize(true);
         mTrailerRecycle.setAdapter(mTrailerAdapter);
     }
-
 
     //ReviewAsyncTask method in onPostExecute for setting data on the list of reviews
     @Override

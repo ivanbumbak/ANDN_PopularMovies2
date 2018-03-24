@@ -65,7 +65,6 @@
             android:id="@+id/average_vote_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="46dp"
             android:layout_marginStart="46dp"
             android:fontFamily="sans-serif"
             android:text="@string/average_vote_label"
@@ -86,6 +85,17 @@
             app:layout_constraintStart_toStartOf="@+id/average_vote_label"
             app:layout_constraintTop_toBottomOf="@+id/average_vote_label"
             tools:text="@string/average_vote_placeholder" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/fav_ic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/average_vote_label"
+            android:layout_marginRight="16dp" />
 
         <View
             android:id="@+id/viewSynopsis"
