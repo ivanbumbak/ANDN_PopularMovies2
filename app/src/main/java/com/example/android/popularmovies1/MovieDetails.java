@@ -71,10 +71,8 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
          * @param List<MovieData> movieList is data set for movie details
          * @param int id gets movie ID from MovieData class */
         int movieId = (Integer) getIntent().getExtras().get(getString(R.string.movie_id));
-
         List<MovieData> movieList;
         movieList = getIntent().getParcelableArrayListExtra(getString(R.string.movie_lsit));
-
         MovieData movieData = movieList.get(movieId);
         int id = movieData.getMovieId();
 
