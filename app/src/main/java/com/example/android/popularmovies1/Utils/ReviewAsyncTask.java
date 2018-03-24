@@ -41,7 +41,7 @@ public class ReviewAsyncTask extends AsyncTask<String, Void, List<ReviewData>> {
             Log.e("ReviewAsyncTask", "Error in ReviewAsyncTask");
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.e("JSONAsync", "JSON problem");
+            Log.e("JSONAsync", "JSON problem reviews");
         }
 
         return reviewList;

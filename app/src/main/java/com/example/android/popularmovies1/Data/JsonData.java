@@ -25,6 +25,9 @@ public class JsonData {
     private final static String REVIEW_AUTHOR = "author";
     private final static String REVIEW_CONTENT = "content";
 
+    private final static String TRAILER_URL = "https://www.youtube.com/watch?v=";
+    private final static String TRAILER_KEY = "key";
+
     //JSON for Movie Details
     public static List<MovieData> getDataFromJson(String json) throws JSONException {
         List<MovieData> listOfMovies = new ArrayList<>();
@@ -83,5 +86,36 @@ public class JsonData {
         }
 
         return listOfReviews;
+    }
+
+    //JSON for Trailer
+    public static List<TrailerData> getTrailerFromJson(String json) throws JSONException {
+        List<TrailerData> listOfTrailers = new ArrayList<>();
+
+        try {
+            JSONObject trailers = new JSONObject(json);
+            JSONArray trailersArray = trailers.getJSONArray(QUERY_RESULTS);
+            if(trailersArray.length() == 0) {
+                String key = "No trailers for this movie!";
+
+                TrailerData trailerData = new TrailerData(key);
+                listOfTrailers.add(trailerData);
+            } else {
+                for(int i = 0; i < trailersArray.length(); i++) {
+                    JSONObject jsonTrailer = trailersArray.getJSONObject(i);
+                    String key = jsonTrailer.optString(TRAILER_KEY);
+                    String url = TRAILER_URL + key;
+
+                    TrailerData trailerData = new TrailerData(url);
+
+                    listOfTrailers.add(trailerData);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("TrailerJson", "JSON Trailer Error");
+        }
+
+        return listOfTrailers;
     }
 }

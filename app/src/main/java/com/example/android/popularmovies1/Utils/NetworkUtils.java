@@ -20,6 +20,7 @@ public class NetworkUtils {
     private final static String API_KEY = ""; //Add your own API key
 
     private final static String REVIEW = "reviews";
+    private final static String TRAILER = "videos";
 
     //URL builder for movie details
     public static URL buildUrl(String sortMovie) {
@@ -43,6 +44,24 @@ public class NetworkUtils {
         Uri builtUri = Uri.parse(BASE_MOVIE_URL).buildUpon()
                 .appendPath(id)
                 .appendPath(REVIEW)
+                .appendQueryParameter(QUERY_API_KEY, API_KEY)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+    //URL builder for trailers
+    public static URL buildTrailerUrl(String id) {
+        Uri builtUri = Uri.parse(BASE_MOVIE_URL).buildUpon()
+                .appendPath(id)
+                .appendPath(TRAILER)
                 .appendQueryParameter(QUERY_API_KEY, API_KEY)
                 .build();
 
