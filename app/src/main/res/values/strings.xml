@@ -43,11 +43,17 @@
     <!-- Label text for sort by top rated movies -->
     <string name="top_rated_sort">Top rated</string>
 
+    <!-- Label text for sorting movies as favorites -->
+    <string name="favorite">Favorite</string>
+
     <!-- Username TextView -->
     <string name="username">userName</string>
 
     <!-- Review TextView -->
     <string name="review">Review text</string>
+
+    <!-- Label for movie trailers -->
+    <string name="trailers_label">Trailers</string>
 
     <!-- Label for reviews in activity_movie_detaily.xml -->
     <string name="review_label">Review</string>
@@ -58,6 +64,9 @@
     <!-- Message if reviews don't exist for authors -->
     <string name="no_authors">No authors, yet!</string>
 
-    <!-- Label for movie trailers -->
-    <string name="trailers_label">Trailers</string>
+    <!-- Message for adding movie to favorites -->
+    <string name="add_fav">Added to favorites!</string>
+
+    <!-- Message for removing movie from favorites -->
+    <string name="remove_fav">Removed from favorites!</string>
 </resources>

@@ -2,8 +2,8 @@ package com.example.android.popularmovies1;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,10 +24,16 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
 
     private final static String popular = "popular";
     private final static String topRated = "top_rated";
+
+    public final static String DETAILS_KEY = "movieDetails";
+
     @BindView(R.id.grid_view)
     GridView gridView;
+
     private List<MovieData> movieDataList = new ArrayList<>();
     private MovieAdapter movieAdapter;
+
+    private int currentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +85,8 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
             case R.id.top_rated_sort:
                 movieAsyncTask = new MovieAsyncTask(this);
                 movieAsyncTask.execute(topRated);
+                break;
+            case R.id.favorite_sort:
                 break;
         }
         return super.onOptionsItemSelected(item);
