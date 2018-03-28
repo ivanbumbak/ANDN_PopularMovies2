@@ -24,16 +24,16 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
 
     private final static String popular = "popular";
     private final static String topRated = "top_rated";
+    private final static String favorite = "favorites";
 
-    public final static String DETAILS_KEY = "movieDetails";
+    private final static String MOVIE_LIST_KEY = "movieList";
+
 
     @BindView(R.id.grid_view)
     GridView gridView;
 
-    private List<MovieData> movieDataList = new ArrayList<>();
+    private List<MovieData> movieDataList;
     private MovieAdapter movieAdapter;
-
-    private int currentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        movieDataList = new ArrayList<>();
         movieAdapter = new MovieAdapter(this, movieDataList);
 
         MovieAsyncTask movieAsyncTask = new MovieAsyncTask(this);
@@ -87,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
                 movieAsyncTask.execute(topRated);
                 break;
             case R.id.favorite_sort:
+                movieAsyncTask = new MovieAsyncTask(this);
+                movieAsyncTask.execute(favorite);
                 break;
         }
         return super.onOptionsItemSelected(item);

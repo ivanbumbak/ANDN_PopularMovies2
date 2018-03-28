@@ -38,15 +38,14 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
     private final static String BASE_URL = "http://image.tmdb.org/t/p/";
     private final static String SIZE = "w185/";
 
-    private final static String MOVIE_KEY = "movieKey";
+    private static final String FAV_STATE_KEY = "fav_key";
+    private static final String FAV_COLOR_STATE_KEY = "color_key";
 
     private List<ReviewData> mReviewList;
     private List<TrailerData> mTrailerList;
 
     private ReviewAdapter mReviewAdapter;
     private TrailerAdapter mTrailerAdapter;
-
-    private MovieData mMovieData;
 
     private boolean isFav;
 
@@ -105,6 +104,23 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putBoolean(FAV_STATE_KEY, isFav);
+        if(isFav) {
+            mFavoriteImage.setImageResource(R.drawable.fav_ic_selected);
+        } else {
+            mFavoriteImage.setImageResource(R.drawable.fav_ic_no);
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        isFav = savedInstanceState.getBoolean(FAV_STATE_KEY);
+        if(isFav) {
+            mFavoriteImage.setImageResource(R.drawable.fav_ic_selected);
+        } else {
+            mFavoriteImage.setImageResource(R.drawable.fav_ic_no);
+        }
     }
 
     //onClickListener for launching movie trailers
