@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PopularMovies1</string>
+    <string name="app_name">Popular Movies</string>
 
     <!-- contentDescription for ImageView for movie poster -->
     <string name="movie_poster_desc">Movie Poster</string>
