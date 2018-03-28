@@ -28,11 +28,10 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
 
     private final static String MOVIE_LIST_KEY = "movieList";
 
-
     @BindView(R.id.grid_view)
     GridView gridView;
 
-    private List<MovieData> movieDataList;
+    private List<MovieData> movieDataList = new ArrayList<>();
     private MovieAdapter movieAdapter;
 
     @Override
@@ -41,12 +40,12 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        movieDataList = new ArrayList<>();
         movieAdapter = new MovieAdapter(this, movieDataList);
 
         MovieAsyncTask movieAsyncTask = new MovieAsyncTask(this);
         movieAsyncTask.execute(popular);
 
+        gridView.setAdapter(movieAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -65,6 +64,18 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         movieDataList = output;
         movieAdapter.addAll(movieDataList);
         gridView.setAdapter(movieAdapter);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(MOVIE_LIST_KEY, (ArrayList<MovieData>) movieDataList);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        movieDataList = savedInstanceState.getParcelableArrayList(MOVIE_LIST_KEY);
     }
 
     @Override

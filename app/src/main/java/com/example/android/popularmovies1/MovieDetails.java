@@ -39,7 +39,6 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
     private final static String SIZE = "w185/";
 
     private static final String FAV_STATE_KEY = "fav_key";
-    private static final String FAV_COLOR_STATE_KEY = "color_key";
 
     private List<ReviewData> mReviewList;
     private List<TrailerData> mTrailerList;
