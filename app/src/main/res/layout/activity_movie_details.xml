@@ -95,8 +95,7 @@
             android:src="@drawable/fav_ic_no"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/average_vote_label"
-            android:layout_marginRight="16dp"
-            android:onClick="onClickFav"/>
+            android:layout_marginRight="16dp" />
 
         <View
             android:id="@+id/viewSynopsis"

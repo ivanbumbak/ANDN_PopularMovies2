@@ -1,11 +1,13 @@
 
 package com.example.android.popularmovies1;
 
+
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -38,15 +40,13 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
     private final static String BASE_URL = "http://image.tmdb.org/t/p/";
     private final static String SIZE = "w185/";
 
-    private static final String FAV_STATE_KEY = "fav_key";
-
     private List<ReviewData> mReviewList;
     private List<TrailerData> mTrailerList;
 
     private ReviewAdapter mReviewAdapter;
     private TrailerAdapter mTrailerAdapter;
 
-    private boolean isFav;
+    public MovieData movieData;
 
     @BindView(R.id.poster_detail)
     ImageView mMoviePoster;
@@ -69,6 +69,7 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
     ImageView mFavoriteImage;
 
     Context mContext;
+    SQLiteDatabase favDb = MainActivity.getFavMoviesDb();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +82,7 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
         List<MovieData> movieList;
         movieList = getIntent().getParcelableArrayListExtra(getString(R.string.movie_lsit));
 
-        MovieData movieData = movieList.get(movieId);
-        int id = movieData.getMovieId();
+        movieData = movieList.get(movieId);
 
         //Calling method for displaying movie details
         displayMovieDetail();
@@ -93,33 +93,12 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
         //Calling method for displaying reviews in RecycleView
         displayMovieReview();
 
-        isFav = isFavHelper(id);
-
-        if(isFav) {
-            mFavoriteImage.setImageResource(R.drawable.fav_ic_selected);
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(FAV_STATE_KEY, isFav);
-        if(isFav) {
-            mFavoriteImage.setImageResource(R.drawable.fav_ic_selected);
-        } else {
-            mFavoriteImage.setImageResource(R.drawable.fav_ic_no);
-        }
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        isFav = savedInstanceState.getBoolean(FAV_STATE_KEY);
-        if(isFav) {
-            mFavoriteImage.setImageResource(R.drawable.fav_ic_selected);
-        } else {
-            mFavoriteImage.setImageResource(R.drawable.fav_ic_no);
-        }
+        mFavoriteImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleFav(movieData);
+            }
+        });
     }
 
     //onClickListener for launching movie trailers
@@ -140,7 +119,8 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
         List<MovieData> movieList;
         movieList = getIntent().getParcelableArrayListExtra(getString(R.string.movie_lsit));
 
-        MovieData movieData = movieList.get(movieId);
+        movieData = movieList.get(movieId);
+        String title = movieData.getTitle();
 
         Picasso.with(mContext).load(BASE_URL + SIZE +
                 movieData.getPoster()).into(mMoviePoster);
@@ -148,6 +128,12 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
         mReleaseDate.setText(movieData.getReleaseDate());
         mAverageVote.setText(Double.toString(movieData.getRating()));
         mSynopsis.setText(movieData.getSynopsis());
+
+        if(isFav(title)) {
+            mFavoriteImage.setImageResource(R.drawable.fav_ic_selected);
+        } else {
+            mFavoriteImage.setImageResource(R.drawable.fav_ic_no);
+        }
     }
 
     //Method for displaying movie trailers
@@ -230,55 +216,44 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
     }
 
     //Helper method to check if movie is already favorite
-    public boolean isFavHelper(int idFav) {
-        Cursor cursor = getContentResolver().query(FavoriteContract.FavoriteEntry.CONTENT_URI,
-                null,
-                "_id=?",
-                new String[]{String.valueOf(idFav)}, null);
+    public boolean isFav(String favItem) {
+        String[] columns = {FavoriteContract.FavoriteEntry.COLUMN_TITLE};
+        String selection = FavoriteContract.FavoriteEntry.COLUMN_TITLE + " =?";
+        String[] selectionArgs = {favItem};
+        String limit = "1";
 
-        if(cursor.getCount() > 0) {
-            cursor.close();
-            return true;
-        }
-
-        return false;
+        Cursor c = favDb.query(FavoriteContract.FavoriteEntry.TABLE_NAME, columns, selection,
+                selectionArgs, null, null, null, limit);
+        boolean isHere = (c.getCount() > 0);
+        c.close();
+        return isHere;
     }
 
-    //Adds and removes movie from favorites
-    public void onClickFav(View view) {
-        int movieId = (Integer) getIntent().getExtras().get(getString(R.string.movie_id));
+    //Method for adding or removing movies in favorite movie database
+    public long toggleFav(MovieData movieData) {
+        ContentValues cv = new ContentValues();
+        boolean favorite = isFav(movieData.getTitle());
 
-        List<MovieData> movieList;
-        movieList = getIntent().getParcelableArrayListExtra(getString(R.string.movie_lsit));
-
-        MovieData movieData = movieList.get(movieId);
-        int id = movieData.getMovieId();
-
-        if(isFav) {
-            String idString = String.valueOf(id);
-            Uri uri = FavoriteContract.FavoriteEntry.CONTENT_URI;
-            uri = uri.buildUpon().appendPath(idString).build();
-
-            getContentResolver().delete(uri, null, null);
+        if(favorite) {
+            favDb.delete(FavoriteContract.FavoriteEntry.TABLE_NAME,
+                    null, null);
             mFavoriteImage.setImageResource(R.drawable.fav_ic_no);
-            isFav = false;
+            movieData.setIsFav(false);
             Toast.makeText(MovieDetails.this, getString(R.string.remove_fav),
                     Toast.LENGTH_SHORT).show();
         } else {
-            ContentValues cv = new ContentValues();
-
+            cv.put(FavoriteContract.FavoriteEntry.COLUMN_ID, movieData.getMovieId());
             cv.put(FavoriteContract.FavoriteEntry.COLUMN_POSTER, movieData.getPoster());
             cv.put(FavoriteContract.FavoriteEntry.COLUMN_TITLE, movieData.getTitle());
             cv.put(FavoriteContract.FavoriteEntry.COLUMN_RELEASE_DATE, movieData.getReleaseDate());
-            cv.put(FavoriteContract.FavoriteEntry.COLUMN_AVERAGE_VOTE, movieData.getReleaseDate());
+            cv.put(FavoriteContract.FavoriteEntry.COLUMN_AVERAGE_VOTE, movieData.getRating());
             cv.put(FavoriteContract.FavoriteEntry.COLUMN_SYNOPSIS, movieData.getSynopsis());
 
-            getContentResolver().insert(FavoriteContract.FavoriteEntry.CONTENT_URI, cv);
-
             mFavoriteImage.setImageResource(R.drawable.fav_ic_selected);
-            isFav = true;
             Toast.makeText(MovieDetails.this, getString(R.string.add_fav),
                     Toast.LENGTH_SHORT).show();
         }
+
+        return favDb.insert(FavoriteContract.FavoriteEntry.TABLE_NAME, null, cv);
     }
 }

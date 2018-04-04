@@ -12,6 +12,7 @@ public class MovieData implements Parcelable {
     private int mMovieId;
     private String mPoster, mTitle, mReleaseDate, mSynopsis;
     private double mRating;
+    private boolean mIsFav;
 
     public static final Parcelable.Creator CREATOR = new Creator() {
         @Override
@@ -102,6 +103,16 @@ public class MovieData implements Parcelable {
     //Setter method for short description of movie
     public void setSynopsis(String synopsis) {
         this.mSynopsis = synopsis;
+    }
+
+    //Getter method for checking if movie is already favorite
+    public boolean getIsFav() {
+        return mIsFav;
+    }
+
+    //Setter method for checking if movie is already favorite
+    public void setIsFav(boolean isFav) {
+        this.mIsFav = isFav;
     }
 
     public String toString() {

@@ -18,6 +18,7 @@ public class FavoriteContract {
         public static final String TABLE_NAME = "fav_movies";
 
         //COLUMN NAMES
+        public static final String COLUMN_ID = "movieId";
         public static final String COLUMN_POSTER = "moviePoster";
         public static final String COLUMN_TITLE = "movieTitle";
         public static final String COLUMN_RELEASE_DATE = "releaseDate";

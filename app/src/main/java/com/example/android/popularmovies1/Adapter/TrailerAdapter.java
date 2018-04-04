@@ -20,7 +20,7 @@ import java.util.List;
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerViewHolder> {
 
     private final static String THUMBNAIL_PATH = "http://img.youtube.com/vi/";
-    private final static String THUMB_PARAM = "/0.jpg";
+    private final static String THUMB_PARAM = "/1.jpg";
 
     private List<TrailerData> mTrailerList;
     private Context mContext;
@@ -66,7 +66,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
     @Override
     public void onBindViewHolder(TrailerViewHolder holder, int position) {
         TrailerData trailer = mTrailerList.get(position);
-        Picasso.with(mContext).load(THUMBNAIL_PATH + getItemId(position) + THUMB_PARAM)
+        Picasso.with(mContext).load(THUMBNAIL_PATH + trailer + THUMB_PARAM)
                 .placeholder(R.drawable.trailer)
                 .into(holder.trailerThumbnail);
     }

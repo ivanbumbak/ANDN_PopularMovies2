@@ -2,7 +2,6 @@
 package com.example.android.popularmovies1.Database;
 
 import android.content.ContentProvider;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
@@ -62,20 +61,6 @@ public class FavoritesProvider extends ContentProvider {
                         null,
                         sortOrder);
                 break;
-            case FAVORITES_WITH_ID:
-                String id = uri.getPathSegments().get(1);
-
-                String mSelection = "_id=?";
-                String[] mSelectionArgs = new String[]{id};
-
-                retCursor = db.query(FavoriteContract.FavoriteEntry.TABLE_NAME,
-                        projection,
-                        mSelection,
-                        mSelectionArgs,
-                        null,
-                        null,
-                        sortOrder);
-                break;
             default:
                 throw new UnsupportedOperationException("Uknown uri: " + uri);
         }
@@ -88,96 +73,24 @@ public class FavoritesProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        int match = sUriMatcher.match(uri);
-
-        switch(match) {
-            case FAVORITES:
-                return "vnd.android.cursor.dir" + "/" + FavoriteContract.AUTHORITY + "/" +
-                        FavoriteContract.FAV_PATH;
-            case FAVORITES_WITH_ID:
-                return "vnd.android.cursor.item" + "/" + FavoriteContract.AUTHORITY + "/" +
-                        FavoriteContract.FAV_PATH;
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
-        }
+        return null;
     }
 
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        final SQLiteDatabase db = mFavoriteDbHelper.getWritableDatabase();
-
-        int match = sUriMatcher.match(uri);
-        Uri retUri;
-
-        switch(match) {
-            case FAVORITES:
-                long id = db.insert(FavoriteContract.FavoriteEntry.TABLE_NAME,
-                        null, values);
-                if(id > 0) {
-                    retUri = ContentUris.withAppendedId(FavoriteContract
-                            .FavoriteEntry.CONTENT_URI, id);
-                } else {
-                    throw new android.database.SQLException("Failed to insert row into " + id);
-                }
-                break;
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
-        }
-
-        getContext().getContentResolver().notifyChange(uri, null);
-
-        return retUri;
+        return null;
     }
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection,
                       @Nullable String[] selectionArgs) {
-        final SQLiteDatabase db = mFavoriteDbHelper.getWritableDatabase();
-
-        int match = sUriMatcher.match(uri);
-        int favDeleted;
-
-        switch(match) {
-            case FAVORITES_WITH_ID:
-                String id = uri.getPathSegments().get(1);
-
-                favDeleted = db.delete(FavoriteContract.FavoriteEntry.TABLE_NAME,
-                        "_id=?", new String[]{id});
-                break;
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
-        }
-
-        if(favDeleted != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
-        }
-
-        return favDeleted;
+       return 0;
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values,
                       @Nullable String selection, @Nullable String[] selectionArgs) {
-        int match = sUriMatcher.match(uri);
-        int favUpdated;
-
-        switch(match) {
-            case FAVORITES_WITH_ID:
-                String id = uri.getPathSegments().get(1);
-
-                favUpdated = mFavoriteDbHelper.getWritableDatabase().update(
-                        FavoriteContract.FavoriteEntry.TABLE_NAME, values, "_id=?",
-                        new String[]{id});
-                break;
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
-        }
-
-        if(favUpdated != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
-        }
-
-        return favUpdated;
+        return 0;
     }
 }
