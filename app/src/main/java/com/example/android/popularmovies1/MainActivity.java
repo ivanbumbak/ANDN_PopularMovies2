@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         gridView.setAdapter(movieAdapter);
     }
 
+    //Method for restoring movie list
     private void restoreMovies() {
         String choiceSort = choice.getString(PREF_SORT_KEY, popular);
         sort = choiceSort;
