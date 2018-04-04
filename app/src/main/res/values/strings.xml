@@ -4,9 +4,6 @@
     <!-- contentDescription for ImageView for movie poster -->
     <string name="movie_poster_desc">Movie Poster</string>
 
-    <!-- contentDescription for userName icon -->
-    <string name="username_desc">Username icon</string>
-
     <!-- contentDescription for trailer image -->
     <string name="trailer_desc">Movie trailer</string>
 

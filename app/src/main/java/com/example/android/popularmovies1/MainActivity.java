@@ -2,7 +2,6 @@ package com.example.android.popularmovies1;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -34,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
 
     private final static String MOVIE_LIST_KEY = "movieList";
     private final static String PREF_NAME = "pref";
-    private final static String PREF_SORT_KEY = "text";
+    private final static String PREF_SORT_KEY = "sort";
 
     @BindView(R.id.grid_view)
     GridView gridView;
@@ -43,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
     private MovieAdapter movieAdapter;
     private SharedPreferences choice;
     public static SQLiteDatabase favMoviesDb;
-    private String sort = "popular";
+    private String sort;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         return favMoviesDb;
     }
 
-    //Method for saving movies as favorite
+    //Method for saving current state in SharedPreferences
     private void saveMovies() {
         SharedPreferences.Editor editor = choice.edit();
         String savedMovie = sort;
@@ -107,20 +106,18 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         editor.apply();
     }
 
-    //Method for getting movies as favorite
+    //Method for getting movies via MovieAsyncTask class
     public void getMovies() {
         MovieAsyncTask movieAsyncTask = new MovieAsyncTask(this);
         movieAsyncTask.execute(sort);
         gridView.setAdapter(movieAdapter);
     }
 
-    //Method for restoring movies as favorite
     private void restoreMovies() {
         String choiceSort = choice.getString(PREF_SORT_KEY, popular);
         sort = choiceSort;
     }
 
-    //Method for getting all movies
     private Cursor getAll() {
         return favMoviesDb.query(FavoriteContract.FavoriteEntry.TABLE_NAME,
                 null,
@@ -128,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
                 null,
                 null,
                 null,
-                FavoriteContract.FavoriteEntry.COLUMN_TITLE);
+                FavoriteContract.FavoriteEntry.COLUMN_ID);
     }
 
     //Method for retrieving list of movies from database
@@ -176,7 +173,6 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Context context = MainActivity.this;
         int selectedItem = item.getItemId();
         switch (selectedItem) {
             case R.id.popularity_sort:

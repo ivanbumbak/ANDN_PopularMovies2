@@ -236,7 +236,7 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
 
         if(favorite) {
             favDb.delete(FavoriteContract.FavoriteEntry.TABLE_NAME,
-                    null, null);
+                    FavoriteContract.FavoriteEntry.COLUMN_ID, null);
             mFavoriteImage.setImageResource(R.drawable.fav_ic_no);
             movieData.setIsFav(false);
             Toast.makeText(MovieDetails.this, getString(R.string.remove_fav),
