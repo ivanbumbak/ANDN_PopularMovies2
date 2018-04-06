@@ -51,18 +51,19 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        if(savedInstanceState != null) {
+            movieDataList = savedInstanceState.getParcelableArrayList(MOVIE_LIST_KEY);
+        } else {
+            if (preferences.getString(PREF_SORT_KEY, popular).equals(favorite)) {
+                displayFavMovies();
+            } else {
+                getMovies();
+            }
+        }
+
         preferences = this.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = preferences.edit();
         editor.apply();
-
-        FavoriteDbHelper dbHelper = new FavoriteDbHelper(this);
-        favMoviesDb = dbHelper.getWritableDatabase();
-
-        if(preferences.getString(PREF_SORT_KEY, popular).equals(favorite)) {
-            displayFavMovies();
-        } else {
-            getMovies();
-        }
 
         movieAdapter = new MovieAdapter(this, movieDataList);
         gridView.setAdapter(movieAdapter);
@@ -84,6 +85,12 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         movieDataList = output;
         movieAdapter.addAll(movieDataList);
         gridView.setAdapter(movieAdapter);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(MOVIE_LIST_KEY, (ArrayList<MovieData>) movieDataList);
     }
 
     //Getter method for fetching favorite movies
@@ -139,6 +146,8 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
 
     //Method for displaying favorite movies
     public void displayFavMovies() {
+        FavoriteDbHelper dbHelper = new FavoriteDbHelper(this);
+        favMoviesDb = dbHelper.getWritableDatabase();
         movieDataList.clear();
         movieAdapter.clear();
         movieDataList = retrieveFromDb(getAll());
