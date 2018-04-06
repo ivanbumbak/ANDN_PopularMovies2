@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
 
     private final static String popular = "popular";
     private final static String topRated = "top_rated";
+    private final static String favorite = "favorite";
 
     private final static String MOVIE_LIST_KEY = "movieList";
     private final static String PREF_NAME = "pref";
@@ -50,10 +51,6 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        if(savedInstanceState != null) {
-            movieDataList = savedInstanceState.getParcelableArrayList(MOVIE_LIST_KEY);
-        }
-
         preferences = this.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = preferences.edit();
         editor.apply();
@@ -61,8 +58,10 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         FavoriteDbHelper dbHelper = new FavoriteDbHelper(this);
         favMoviesDb = dbHelper.getWritableDatabase();
 
-        if(movieDataList == null || movieDataList.isEmpty()) {
-           getMovies();
+        if(preferences.getString(PREF_SORT_KEY, popular).equals(favorite)) {
+            displayFavMovies();
+        } else {
+            getMovies();
         }
 
         movieAdapter = new MovieAdapter(this, movieDataList);
@@ -85,12 +84,6 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         movieDataList = output;
         movieAdapter.addAll(movieDataList);
         gridView.setAdapter(movieAdapter);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(MOVIE_LIST_KEY, (ArrayList<MovieData>) movieDataList);
     }
 
     //Getter method for fetching favorite movies
@@ -178,6 +171,9 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
                 asyncTaskTopRated.execute(topRated);
                 break;
             case R.id.favorite_sort:
+                editor = getSharedPreferences(PREF_NAME, MODE_PRIVATE).edit();
+                editor.putString(PREF_SORT_KEY, favorite);
+                editor.apply();
                 displayFavMovies();
         }
         return super.onOptionsItemSelected(item);
