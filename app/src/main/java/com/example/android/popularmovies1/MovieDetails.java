@@ -236,11 +236,13 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
 
         if(favorite) {
             favDb.delete(FavoriteContract.FavoriteEntry.TABLE_NAME,
-                    FavoriteContract.FavoriteEntry.COLUMN_ID, null);
+                    FavoriteContract.FavoriteEntry.COLUMN_ID + "=" +
+                            movieData.getMovieId(), null);
             mFavoriteImage.setImageResource(R.drawable.fav_ic_no);
             movieData.setIsFav(false);
             Toast.makeText(MovieDetails.this, getString(R.string.remove_fav),
                     Toast.LENGTH_SHORT).show();
+            return -1; //movie removed from favorites
         } else {
             cv.put(FavoriteContract.FavoriteEntry.COLUMN_ID, movieData.getMovieId());
             cv.put(FavoriteContract.FavoriteEntry.COLUMN_POSTER, movieData.getPoster());
@@ -252,8 +254,8 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
             mFavoriteImage.setImageResource(R.drawable.fav_ic_selected);
             Toast.makeText(MovieDetails.this, getString(R.string.add_fav),
                     Toast.LENGTH_SHORT).show();
-        }
 
-        return favDb.insert(FavoriteContract.FavoriteEntry.TABLE_NAME, null, cv);
+            return favDb.insert(FavoriteContract.FavoriteEntry.TABLE_NAME, null, cv);
+        }
     }
 }

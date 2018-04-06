@@ -104,7 +104,7 @@ public class FavoritesProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
         final SQLiteDatabase db = mFavoriteDbHelper.getWritableDatabase();
 
         int match = sUriMatcher.match(uri);
@@ -131,8 +131,8 @@ public class FavoritesProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(@NonNull Uri uri, @Nullable String selection,
-                      @Nullable String[] selectionArgs) {
+    public int delete(@NonNull Uri uri, String selection,
+                      String[] selectionArgs) {
        final SQLiteDatabase db = mFavoriteDbHelper.getWritableDatabase();
 
         int match = sUriMatcher.match(uri);
