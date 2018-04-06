@@ -69,13 +69,15 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
     ImageView mFavoriteImage;
 
     Context mContext;
-    SQLiteDatabase favDb = MainActivity.getFavMoviesDb();
+    SQLiteDatabase favDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
         ButterKnife.bind(this);
+
+        favDb = MainActivity.getFavMoviesDb(this);
 
         final int movieId = (Integer) getIntent().getExtras().get(getString(R.string.movie_id));
 
@@ -234,10 +236,15 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
         ContentValues cv = new ContentValues();
         boolean favorite = isFav(movieData.getTitle());
 
+        int deleteId = movieData.getMovieId();
+        String del = String.valueOf(deleteId);
+        Uri.Builder builder = new Uri.Builder();
+        builder.appendPath(FavoriteContract.FavoriteEntry.CONTENT_URI + "/" +
+                del).build();
+        Uri uri = builder.build();
+
         if(favorite) {
-            favDb.delete(FavoriteContract.FavoriteEntry.TABLE_NAME,
-                    FavoriteContract.FavoriteEntry.COLUMN_ID + "=" +
-                            movieData.getMovieId(), null);
+            getContentResolver().delete(uri, null, null);
             mFavoriteImage.setImageResource(R.drawable.fav_ic_no);
             movieData.setIsFav(false);
             Toast.makeText(MovieDetails.this, getString(R.string.remove_fav),

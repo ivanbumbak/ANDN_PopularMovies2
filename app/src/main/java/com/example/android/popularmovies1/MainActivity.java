@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -51,6 +53,10 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        preferences = this.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        editor = preferences.edit();
+        editor.apply();
+
         if(savedInstanceState != null) {
             movieDataList = savedInstanceState.getParcelableArrayList(MOVIE_LIST_KEY);
         } else {
@@ -60,10 +66,6 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
                 getMovies();
             }
         }
-
-        preferences = this.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        editor = preferences.edit();
-        editor.apply();
 
         movieAdapter = new MovieAdapter(this, movieDataList);
         gridView.setAdapter(movieAdapter);
@@ -94,7 +96,9 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
     }
 
     //Getter method for fetching favorite movies
-    public static SQLiteDatabase getFavMoviesDb() {
+    public static SQLiteDatabase getFavMoviesDb(Context c) {
+        FavoriteDbHelper dbHelper = new FavoriteDbHelper(c);
+        favMoviesDb = dbHelper.getWritableDatabase();
         return favMoviesDb;
     }
 
@@ -106,14 +110,13 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         gridView.setAdapter(movieAdapter);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private Cursor getAll() {
-        return favMoviesDb.query(FavoriteContract.FavoriteEntry.TABLE_NAME,
-                null,
-                null,
-                null,
-                null,
-                null,
-                FavoriteContract.FavoriteEntry.COLUMN_ID);
+       return getContentResolver().query(FavoriteContract.FavoriteEntry.CONTENT_URI,
+               null,
+               null,
+               null,
+               null);
     }
 
     //Method for retrieving list of movies from database
@@ -145,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
     }
 
     //Method for displaying favorite movies
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void displayFavMovies() {
         FavoriteDbHelper dbHelper = new FavoriteDbHelper(this);
         favMoviesDb = dbHelper.getWritableDatabase();
