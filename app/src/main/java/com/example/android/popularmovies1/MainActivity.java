@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
     private SharedPreferences.Editor editor;
     public static SQLiteDatabase favMoviesDb;
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +60,11 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
 
         if(savedInstanceState != null) {
             movieDataList = savedInstanceState.getParcelableArrayList(MOVIE_LIST_KEY);
+            movieAdapter = new MovieAdapter(this, movieDataList);
+            gridView.setAdapter(movieAdapter);
         } else {
+            movieAdapter = new MovieAdapter(this, movieDataList);
+            gridView.setAdapter(movieAdapter);
             if (preferences.getString(PREF_SORT_KEY, popular).equals(favorite)) {
                 displayFavMovies();
             } else {
@@ -165,6 +170,7 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         return true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int selectedItem = item.getItemId();

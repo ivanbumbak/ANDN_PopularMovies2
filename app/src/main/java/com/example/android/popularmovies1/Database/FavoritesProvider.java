@@ -143,7 +143,8 @@ public class FavoritesProvider extends ContentProvider {
                 String id = uri.getPathSegments().get(1);
 
                 favDeleted = db.delete(FavoriteContract.FavoriteEntry.TABLE_NAME,
-                        FavoriteContract.FavoriteEntry.COLUMN_ID, new String[]{id});
+                        FavoriteContract.FavoriteEntry.COLUMN_ID + "=?",
+                        new String[]{"" + id});
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);

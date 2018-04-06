@@ -237,11 +237,10 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
         boolean favorite = isFav(movieData.getTitle());
 
         int deleteId = movieData.getMovieId();
-        String del = String.valueOf(deleteId);
+        String deletedItemId = String.valueOf(deleteId);
         Uri.Builder builder = new Uri.Builder();
-        builder.appendPath(FavoriteContract.FavoriteEntry.CONTENT_URI + "/" +
-                del).build();
-        Uri uri = builder.build();
+        Uri uri = builder.encodedPath(FavoriteContract.FavoriteEntry.CONTENT_URI +
+                "/" + deletedItemId).build();
 
         if(favorite) {
             getContentResolver().delete(uri, null, null);
