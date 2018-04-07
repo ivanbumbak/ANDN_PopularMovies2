@@ -143,7 +143,7 @@ public class FavoritesProvider extends ContentProvider {
                 String id = uri.getPathSegments().get(1);
 
                 favDeleted = db.delete(FavoriteContract.FavoriteEntry.TABLE_NAME,
-                        FavoriteContract.FavoriteEntry.COLUMN_ID + "=?",
+                        FavoriteContract.FavoriteEntry.COLUMN_ID + "= ?",
                         new String[]{"" + id});
                 break;
             default:
