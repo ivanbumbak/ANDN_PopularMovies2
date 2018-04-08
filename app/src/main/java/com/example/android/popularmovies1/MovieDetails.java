@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -76,6 +77,8 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
         ButterKnife.bind(this);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         favDb = MainActivity.getFavMoviesDb(this);
 
@@ -155,11 +158,21 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
         mTrailerList = new ArrayList<>();
         mTrailerAdapter = new TrailerAdapter(this, mTrailerList, this);
 
-        LinearLayoutManager trailerLayoutManager = new LinearLayoutManager(this,
-                LinearLayoutManager.HORIZONTAL, false);
-        mTrailerRecycle.setLayoutManager(trailerLayoutManager);
-        mTrailerRecycle.setHasFixedSize(true);
-        mTrailerRecycle.setAdapter(mTrailerAdapter);
+        if(this.getResources().getConfiguration()
+                .orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            LinearLayoutManager trailerLayoutManager = new LinearLayoutManager(this,
+                    LinearLayoutManager.VERTICAL, false);
+            mTrailerRecycle.setLayoutManager(trailerLayoutManager);
+            mTrailerRecycle.setHasFixedSize(true);
+            mTrailerRecycle.setAdapter(mTrailerAdapter);
+        } else if(this.getResources().getConfiguration()
+                .orientation == Configuration.ORIENTATION_PORTRAIT) {
+            LinearLayoutManager trailerLayoutManager = new LinearLayoutManager(this,
+                    LinearLayoutManager.HORIZONTAL, false);
+            mTrailerRecycle.setLayoutManager(trailerLayoutManager);
+            mTrailerRecycle.setHasFixedSize(true);
+            mTrailerRecycle.setAdapter(mTrailerAdapter);
+        }
     }
 
     //TrailerAsyncTask method in onPostExecute for setting data on the list of trailers
@@ -238,12 +251,11 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
 
         int deleteId = movieData.getMovieId();
         String deletedItemId = String.valueOf(deleteId);
-        Uri.Builder builder = new Uri.Builder();
-        Uri uri = builder.encodedPath(FavoriteContract.FavoriteEntry.CONTENT_URI +
-                "/" + deletedItemId).build();
+        Uri uri = Uri.parse(FavoriteContract.FavoriteEntry.CONTENT_URI.toString() +
+                "/" + deletedItemId);
 
         if(favorite) {
-            getContentResolver().delete(uri, null, null);
+            getContentResolver().delete(uri, null,null);
             mFavoriteImage.setImageResource(R.drawable.fav_ic_no);
             movieData.setIsFav(false);
             Toast.makeText(MovieDetails.this, getString(R.string.remove_fav),

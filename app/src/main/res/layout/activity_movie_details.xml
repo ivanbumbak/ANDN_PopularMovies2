@@ -9,7 +9,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#EFE"
+        android:background="@color/colorBackground"
         tools:context="com.example.android.popularmovies1.MovieDetails">
 
         <ImageView
@@ -29,7 +29,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/colorLabel"
             android:textSize="25sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -72,7 +72,8 @@
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/release_date_label"
-            app:layout_constraintStart_toEndOf="@+id/release_date_label" />
+            app:layout_constraintStart_toEndOf="@+id/release_date_label"
+            android:layout_marginLeft="46dp" />
 
         <TextView
             android:id="@+id/average_vote"
@@ -104,7 +105,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:background="#c0c0c0"
+            android:background="@color/colorPrimaryDark"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/release_date" />
@@ -117,8 +118,8 @@
             android:layout_marginTop="8dp"
             android:fontFamily="sans-serif"
             android:text="@string/synopsis_label"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="20sp"
+            android:textColor="@color/colorLabel"
+            android:textSize="23sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/viewSynopsis"
@@ -132,8 +133,8 @@
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
             android:paddingBottom="16dp"
-            android:textColor="#000"
-            android:textSize="18sp"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/synopsis_label"
@@ -147,7 +148,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
-            android:background="#c0c0c0"
+            android:background="@color/colorPrimaryDark"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/synopsis" />
@@ -159,8 +160,8 @@
             android:layout_marginStart="16dp"
             android:fontFamily="sans-serif"
             android:text="@string/trailers_label"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="20sp"
+            android:textColor="@color/colorLabel"
+            android:textSize="23sp"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/viewReview"
             app:layout_constraintStart_toStartOf="parent"
@@ -188,7 +189,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
-            android:background="#c0c0c0"
+            android:background="@color/colorPrimaryDark"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/trailers_recycle" />
@@ -200,8 +201,8 @@
             android:layout_marginStart="16dp"
             android:fontFamily="sans-serif"
             android:text="@string/review_label"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="20sp"
+            android:textColor="@color/colorLabel"
+            android:textSize="23sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/viewTrailers"

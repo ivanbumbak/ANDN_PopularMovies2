@@ -100,6 +100,17 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         outState.putParcelableArrayList(MOVIE_LIST_KEY, (ArrayList<MovieData>) movieDataList);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (preferences.getString(PREF_SORT_KEY, popular).equals(favorite)) {
+            displayFavMovies();
+        } else {
+            getMovies();
+        }
+    }
+
     //Getter method for fetching favorite movies
     public static SQLiteDatabase getFavMoviesDb(Context c) {
         FavoriteDbHelper dbHelper = new FavoriteDbHelper(c);
