@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -19,7 +18,6 @@ import android.widget.GridView;
 import com.example.android.popularmovies1.Adapter.MovieAdapter;
 import com.example.android.popularmovies1.Data.MovieData;
 import com.example.android.popularmovies1.Database.FavoriteContract;
-import com.example.android.popularmovies1.Database.FavoriteDbHelper;
 import com.example.android.popularmovies1.Utils.MovieAsyncTask;
 
 import java.util.ArrayList;
@@ -35,8 +33,10 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
     private final static String favorite = "favorite";
 
     private final static String MOVIE_LIST_KEY = "movieList";
+
     private final static String PREF_NAME = "pref";
     private final static String PREF_SORT_KEY = "sort";
+    private final static String GRID_STATE_KEY = "gridState";
 
     @BindView(R.id.grid_view)
     GridView gridView;
@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
     private MovieAdapter movieAdapter;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
-    public static SQLiteDatabase favMoviesDb;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -85,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         });
     }
 
+    //Output method for displaying movies in GridView
     @Override
     public void finished(List<MovieData> output) {
         movieDataList.clear();
@@ -94,10 +94,26 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         gridView.setAdapter(movieAdapter);
     }
 
+    //onSaveInstanceState method
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(MOVIE_LIST_KEY, (ArrayList<MovieData>) movieDataList);
+        outState.putIntArray(GRID_STATE_KEY, new int[]{gridView.getScrollX(), gridView.getScrollY()});
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        final int[] position = savedInstanceState.getIntArray(GRID_STATE_KEY);
+        if(position != null) {
+            gridView.post(new Runnable() {
+                @Override
+                public void run() {
+                    gridView.scrollTo(position[0], position[1]);
+                }
+            });
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -109,13 +125,6 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         } else {
             getMovies();
         }
-    }
-
-    //Getter method for fetching favorite movies
-    public static SQLiteDatabase getFavMoviesDb(Context c) {
-        FavoriteDbHelper dbHelper = new FavoriteDbHelper(c);
-        favMoviesDb = dbHelper.getWritableDatabase();
-        return favMoviesDb;
     }
 
     //Method for getting movies via MovieAsyncTask class
@@ -166,8 +175,6 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
     //Method for displaying favorite movies
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void displayFavMovies() {
-        FavoriteDbHelper dbHelper = new FavoriteDbHelper(this);
-        favMoviesDb = dbHelper.getWritableDatabase();
         movieDataList.clear();
         movieAdapter.clear();
         movieDataList = retrieveFromDb(getAll());

@@ -8,14 +8,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +43,8 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
     private final static String BASE_URL = "http://image.tmdb.org/t/p/";
     private final static String SIZE = "w185/";
 
+    private final static String SCROLL_STATE_KEY = "scrollStateKey";
+
     private List<ReviewData> mReviewList;
     private List<TrailerData> mTrailerList;
 
@@ -48,6 +52,9 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
     private TrailerAdapter mTrailerAdapter;
 
     public MovieData movieData;
+
+    @BindView(R.id.scrollView)
+    ScrollView mScrollView;
 
     @BindView(R.id.poster_detail)
     ImageView mMoviePoster;
@@ -62,7 +69,6 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
 
     @BindView(R.id.review_recycler)
     RecyclerView mReviewRecycle;
-
     @BindView(R.id.trailers_recycle)
     RecyclerView mTrailerRecycle;
 
@@ -70,8 +76,8 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
     ImageView mFavoriteImage;
 
     Context mContext;
-    SQLiteDatabase favDb;
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,8 +85,6 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
         ButterKnife.bind(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        favDb = MainActivity.getFavMoviesDb(this);
 
         final int movieId = (Integer) getIntent().getExtras().get(getString(R.string.movie_id));
 
@@ -99,6 +103,7 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
         displayMovieReview();
 
         mFavoriteImage.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
                 toggleFav(movieData);
@@ -118,6 +123,7 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
      * @param mReleaseDate sets release date of the movie
      * @param mAverageVote sets average rating grade of the movie
      * @param mSynopsis sets plot of the movie */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void displayMovieDetail() {
         int movieId = (Integer) getIntent().getExtras().get(getString(R.string.movie_id));
 
@@ -231,31 +237,31 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
     }
 
     //Helper method to check if movie is already favorite
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public boolean isFav(String favItem) {
-        String[] columns = {FavoriteContract.FavoriteEntry.COLUMN_TITLE};
-        String selection = FavoriteContract.FavoriteEntry.COLUMN_TITLE + " =?";
-        String[] selectionArgs = {favItem};
-        String limit = "1";
-
-        Cursor c = favDb.query(FavoriteContract.FavoriteEntry.TABLE_NAME, columns, selection,
-                selectionArgs, null, null, null, limit);
+        Cursor c = getContentResolver().query(FavoriteContract.FavoriteEntry.CONTENT_URI,
+                null, null,
+                null, null);
         boolean isHere = (c.getCount() > 0);
         c.close();
         return isHere;
     }
 
     //Method for adding or removing movies in favorite movie database
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public long toggleFav(MovieData movieData) {
         ContentValues cv = new ContentValues();
         boolean favorite = isFav(movieData.getTitle());
 
         int deleteId = movieData.getMovieId();
-        String deletedItemId = String.valueOf(deleteId);
-        Uri uri = Uri.parse(FavoriteContract.FavoriteEntry.CONTENT_URI.toString() +
-                "/" + deletedItemId);
+        String itemId = String.valueOf(deleteId);
+
+        //Uri for deleting movie by movie from database
+        Uri uriDel = Uri.parse(FavoriteContract.FavoriteEntry.CONTENT_URI.toString() +
+                "/" + itemId);
 
         if(favorite) {
-            getContentResolver().delete(uri, null,null);
+            getContentResolver().delete(uriDel, null,null);
             mFavoriteImage.setImageResource(R.drawable.fav_ic_no);
             movieData.setIsFav(false);
             Toast.makeText(MovieDetails.this, getString(R.string.remove_fav),
@@ -273,7 +279,9 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
             Toast.makeText(MovieDetails.this, getString(R.string.add_fav),
                     Toast.LENGTH_SHORT).show();
 
-            return favDb.insert(FavoriteContract.FavoriteEntry.TABLE_NAME, null, cv);
+            getContentResolver().insert(FavoriteContract.FavoriteEntry.CONTENT_URI, cv);
+
+            return 1;
         }
     }
 }
