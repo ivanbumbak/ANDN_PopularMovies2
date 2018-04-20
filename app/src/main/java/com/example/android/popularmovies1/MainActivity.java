@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
 
+    private int mScroll;
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,21 +101,15 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(MOVIE_LIST_KEY, (ArrayList<MovieData>) movieDataList);
-        outState.putIntArray(GRID_STATE_KEY, new int[]{gridView.getScrollX(), gridView.getScrollY()});
+        mScroll = gridView.getFirstVisiblePosition();
+        outState.getInt(GRID_STATE_KEY, mScroll);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        final int[] position = savedInstanceState.getIntArray(GRID_STATE_KEY);
-        if(position != null) {
-            gridView.post(new Runnable() {
-                @Override
-                public void run() {
-                    gridView.scrollTo(position[0], position[1]);
-                }
-            });
-        }
+        mScroll = savedInstanceState.getInt(GRID_STATE_KEY);
+        gridView.setSelection(mScroll);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
