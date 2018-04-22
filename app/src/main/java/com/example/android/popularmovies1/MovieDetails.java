@@ -111,6 +111,27 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
         });
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putIntArray(SCROLL_STATE_KEY, new int[]{mScrollView.getScrollX(),
+                mScrollView.getScrollY()});
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        final int[] scrollPosition = savedInstanceState.getIntArray(SCROLL_STATE_KEY);
+        if(scrollPosition != null) {
+            mScrollView.post(new Runnable() {
+                @Override
+                public void run() {
+                    mScrollView.scrollTo(scrollPosition[0], scrollPosition[1]);
+                }
+            });
+        }
+    }
+
     //onClickListener for launching movie trailers
     @Override
     public void onTrailerClick(TrailerData trailer) {

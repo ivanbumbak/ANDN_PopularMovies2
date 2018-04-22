@@ -46,9 +46,10 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
 
-    private int mScroll;
+    private int mIndex;
+    private int mTop;
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
             movieDataList = savedInstanceState.getParcelableArrayList(MOVIE_LIST_KEY);
             movieAdapter = new MovieAdapter(this, movieDataList);
             gridView.setAdapter(movieAdapter);
+            gridView.setSelectionFromTop(mIndex, mTop);
         } else {
             movieAdapter = new MovieAdapter(this, movieDataList);
             gridView.setAdapter(movieAdapter);
@@ -101,18 +103,12 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(MOVIE_LIST_KEY, (ArrayList<MovieData>) movieDataList);
-        mScroll = gridView.getFirstVisiblePosition();
-        outState.getInt(GRID_STATE_KEY, mScroll);
+        mIndex = gridView.getFirstVisiblePosition();
+        View view = gridView.getChildAt(0);
+        mTop = (view == null) ? 0 : (view.getTop() - gridView.getPaddingTop());
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        mScroll = savedInstanceState.getInt(GRID_STATE_KEY);
-        gridView.setSelection(mScroll);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onResume() {
         super.onResume();
@@ -121,6 +117,8 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         } else {
             getMovies();
         }
+
+        gridView.setSelectionFromTop(mIndex, mTop);
     }
 
     //Method for getting movies via MovieAsyncTask class
