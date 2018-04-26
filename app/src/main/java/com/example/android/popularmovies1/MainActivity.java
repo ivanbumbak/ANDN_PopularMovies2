@@ -9,11 +9,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.GridView;
 
 import com.example.android.popularmovies1.Adapter.MovieAdapter;
 import com.example.android.popularmovies1.Data.MovieData;
@@ -38,16 +39,16 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
     private final static String PREF_SORT_KEY = "sort";
     private final static String GRID_STATE_KEY = "gridState";
 
-    @BindView(R.id.grid_view)
-    GridView gridView;
+    @BindView(R.id.recycle_view)
+    RecyclerView recyclerView;
 
     private List<MovieData> movieDataList = new ArrayList<>();
     private MovieAdapter movieAdapter;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
+    private MovieAdapter.OnItemClickListener mListener;
 
-    private int mIndex;
-    private int mTop;
+    private int mScrollTo;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -62,12 +63,11 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
 
         if(savedInstanceState != null) {
             movieDataList = savedInstanceState.getParcelableArrayList(MOVIE_LIST_KEY);
-            movieAdapter = new MovieAdapter(this, movieDataList);
-            gridView.setAdapter(movieAdapter);
-            gridView.setSelectionFromTop(mIndex, mTop);
+            movieAdapter = new MovieAdapter(this, movieDataList, mListener);
+            recyclerView.setAdapter(movieAdapter);
         } else {
-            movieAdapter = new MovieAdapter(this, movieDataList);
-            gridView.setAdapter(movieAdapter);
+            movieAdapter = new MovieAdapter(this, movieDataList, mListener);
+            recyclerView.setAdapter(movieAdapter);
             if (preferences.getString(PREF_SORT_KEY, popular).equals(favorite)) {
                 displayFavMovies();
             } else {
@@ -75,27 +75,18 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
             }
         }
 
-        movieAdapter = new MovieAdapter(this, movieDataList);
-        gridView.setAdapter(movieAdapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        LinearLayoutManager movieLayoutManager = new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(movieLayoutManager);
+        recyclerView.setAdapter(new MovieAdapter(movieDataList, new MovieAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(MovieData movieData) {
                 Intent intent = new Intent(MainActivity.this, MovieDetails.class);
-                intent.putExtra(getString(R.string.movie_id), (int) id);
+                intent.putExtra(getString(R.string.movie_id));
                 intent.putExtra(getString(R.string.movie_lsit), (ArrayList) movieDataList);
                 getApplicationContext().startActivity(intent);
             }
-        });
-    }
-
-    //Output method for displaying movies in GridView
-    @Override
-    public void finished(List<MovieData> output) {
-        movieDataList.clear();
-        movieAdapter.clear();
-        movieDataList = output;
-        movieAdapter.addAll(movieDataList);
-        gridView.setAdapter(movieAdapter);
+        }));
     }
 
     //onSaveInstanceState method
@@ -103,11 +94,10 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(MOVIE_LIST_KEY, (ArrayList<MovieData>) movieDataList);
-        mIndex = gridView.getFirstVisiblePosition();
-        View view = gridView.getChildAt(0);
-        mTop = (view == null) ? 0 : (view.getTop() - gridView.getPaddingTop());
+        outState.getInt(GRID_STATE_KEY, mScrollTo);
     }
 
+    //onResume method
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onResume() {
@@ -117,8 +107,16 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         } else {
             getMovies();
         }
+    }
 
-        gridView.setSelectionFromTop(mIndex, mTop);
+    //Output method for displaying movies in GridView
+    @Override
+    public void finished(List<MovieData> output) {
+        movieDataList.clear();
+        movieAdapter.clear();
+        movieDataList = output;
+        movieAdapter.addAll(movieDataList);
+        recyclerView.setAdapter(movieAdapter);
     }
 
     //Method for getting movies via MovieAsyncTask class
@@ -126,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         String gettingChoice = preferences.getString(PREF_SORT_KEY, popular);
         MovieAsyncTask movieAsyncTask = new MovieAsyncTask(this);
         movieAsyncTask.execute(gettingChoice);
-        gridView.setAdapter(movieAdapter);
+        recyclerView.setAdapter(movieAdapter);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -173,15 +171,17 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         movieAdapter.clear();
         movieDataList = retrieveFromDb(getAll());
         movieAdapter.addAll(movieDataList);
-        gridView.setAdapter(movieAdapter);
+        recyclerView.setAdapter(movieAdapter);
     }
 
+    //Method for creating menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
+    //Method for selecting menu item
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

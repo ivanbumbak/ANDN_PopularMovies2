@@ -44,6 +44,7 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
     private final static String SIZE = "w185/";
 
     private final static String SCROLL_STATE_KEY = "scrollStateKey";
+    private final static String REVIEW_RECYCLE_KEY = "reviewRecycleKey";
 
     private List<ReviewData> mReviewList;
     private List<TrailerData> mTrailerList;
@@ -260,9 +261,14 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
     //Helper method to check if movie is already favorite
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public boolean isFav(String favItem) {
+        String[] columns = {FavoriteContract.FavoriteEntry.COLUMN_TITLE};
+        String selection = FavoriteContract.FavoriteEntry.COLUMN_TITLE + " =?";
+        String[] selectionArgs = {favItem};
+        String limit = "1";
+
         Cursor c = getContentResolver().query(FavoriteContract.FavoriteEntry.CONTENT_URI,
-                null, null,
-                null, null);
+                columns, selection,
+                selectionArgs, limit);
         boolean isHere = (c.getCount() > 0);
         c.close();
         return isHere;
