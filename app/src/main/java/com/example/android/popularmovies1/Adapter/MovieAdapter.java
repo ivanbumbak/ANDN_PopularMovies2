@@ -39,7 +39,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                         OnItemClickListener listener) {
         mContext = context;
         mMovieList = movies;
-        itemListener = (AdapterView.OnItemClickListener) listener;
+        itemListener = listener;
     }
 
     public class MovieViewHolder extends RecyclerView.ViewHolder {
