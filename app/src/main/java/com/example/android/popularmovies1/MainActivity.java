@@ -13,8 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 
 import com.example.android.popularmovies1.Adapter.MovieAdapter;
 import com.example.android.popularmovies1.Data.MovieData;
@@ -61,12 +59,21 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         editor = preferences.edit();
         editor.apply();
 
+        mListener = new MovieAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(MovieData movieData) {
+                Intent intent = new Intent(MainActivity.this, MovieDetails.class);
+                intent.putExtra(getString(R.string.movie_id), movieData.getMovieId());
+                intent.putExtra(getString(R.string.movie_lsit), (ArrayList) movieDataList);
+                getApplicationContext().startActivity(intent);
+            }
+        };
+        movieAdapter = new MovieAdapter(this, movieDataList, mListener);
+
         if(savedInstanceState != null) {
             movieDataList = savedInstanceState.getParcelableArrayList(MOVIE_LIST_KEY);
-            movieAdapter = new MovieAdapter(this, movieDataList, mListener);
             recyclerView.setAdapter(movieAdapter);
         } else {
-            movieAdapter = new MovieAdapter(this, movieDataList, mListener);
             recyclerView.setAdapter(movieAdapter);
             if (preferences.getString(PREF_SORT_KEY, popular).equals(favorite)) {
                 displayFavMovies();
@@ -78,11 +85,11 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         LinearLayoutManager movieLayoutManager = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(movieLayoutManager);
-        recyclerView.setAdapter(new MovieAdapter(movieDataList, new MovieAdapter.OnItemClickListener() {
+        recyclerView.setAdapter(new MovieAdapter(this, movieDataList, new MovieAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(MovieData movieData) {
                 Intent intent = new Intent(MainActivity.this, MovieDetails.class);
-                intent.putExtra(getString(R.string.movie_id));
+                intent.putExtra(getString(R.string.movie_id), movieData.getMovieId());
                 intent.putExtra(getString(R.string.movie_lsit), (ArrayList) movieDataList);
                 getApplicationContext().startActivity(intent);
             }
@@ -113,9 +120,8 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
     @Override
     public void finished(List<MovieData> output) {
         movieDataList.clear();
-        movieAdapter.clear();
         movieDataList = output;
-        movieAdapter.addAll(movieDataList);
+        movieAdapter = new MovieAdapter(this, movieDataList, mListener);
         recyclerView.setAdapter(movieAdapter);
     }
 
@@ -168,9 +174,8 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void displayFavMovies() {
         movieDataList.clear();
-        movieAdapter.clear();
         movieDataList = retrieveFromDb(getAll());
-        movieAdapter.addAll(movieDataList);
+        movieAdapter = new MovieAdapter(this, movieDataList, mListener);
         recyclerView.setAdapter(movieAdapter);
     }
 
