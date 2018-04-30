@@ -7,9 +7,10 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
 
     private final static String PREF_NAME = "pref";
     private final static String PREF_SORT_KEY = "sort";
-    private final static String GRID_STATE_KEY = "gridState";
+    private final static String SCROLL_STATE_KEY = "scrollState";
 
     @BindView(R.id.recycle_view)
     RecyclerView recyclerView;
@@ -45,8 +46,8 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
     private MovieAdapter.OnItemClickListener mListener;
-
-    private int mScrollTo;
+    private GridLayoutManager gridLayoutManager;
+    private Parcelable savedScrollState;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -59,12 +60,16 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         editor = preferences.edit();
         editor.apply();
 
+        //Initialisation of OnClickListener variable
         mListener = new MovieAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(MovieData movieData) {
                 Intent intent = new Intent(MainActivity.this, MovieDetails.class);
                 intent.putExtra(getString(R.string.movie_id), movieData.getMovieId());
-                intent.putExtra(getString(R.string.movie_lsit), (ArrayList) movieDataList);
+                intent.putExtra(getString(R.string.movie_poster), movieData.getPoster());
+                intent.putExtra(getString(R.string.movie_release_date), movieData.getReleaseDate());
+                intent.putExtra(getString(R.string.movie_average_vote), movieData.getRating());
+                intent.putExtra(getString(R.string.movie_synopsis), movieData.getSynopsis());
                 getApplicationContext().startActivity(intent);
             }
         };
@@ -73,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         if(savedInstanceState != null) {
             movieDataList = savedInstanceState.getParcelableArrayList(MOVIE_LIST_KEY);
             recyclerView.setAdapter(movieAdapter);
+            savedScrollState = savedInstanceState.getParcelable(SCROLL_STATE_KEY);
         } else {
             recyclerView.setAdapter(movieAdapter);
             if (preferences.getString(PREF_SORT_KEY, popular).equals(favorite)) {
@@ -82,15 +88,17 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
             }
         }
 
-        LinearLayoutManager movieLayoutManager = new LinearLayoutManager(this,
-                LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(movieLayoutManager);
+        gridLayoutManager = new GridLayoutManager(this, 2);
+        recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(new MovieAdapter(this, movieDataList, new MovieAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(MovieData movieData) {
                 Intent intent = new Intent(MainActivity.this, MovieDetails.class);
                 intent.putExtra(getString(R.string.movie_id), movieData.getMovieId());
-                intent.putExtra(getString(R.string.movie_lsit), (ArrayList) movieDataList);
+                intent.putExtra(getString(R.string.movie_poster), movieData.getPoster());
+                intent.putExtra(getString(R.string.movie_release_date), movieData.getReleaseDate());
+                intent.putExtra(getString(R.string.movie_average_vote), movieData.getRating());
+                intent.putExtra(getString(R.string.movie_synopsis), movieData.getSynopsis());
                 getApplicationContext().startActivity(intent);
             }
         }));
@@ -101,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(MOVIE_LIST_KEY, (ArrayList<MovieData>) movieDataList);
-        outState.getInt(GRID_STATE_KEY, mScrollTo);
+        outState.putParcelable(SCROLL_STATE_KEY, gridLayoutManager.onSaveInstanceState());
     }
 
     //onResume method

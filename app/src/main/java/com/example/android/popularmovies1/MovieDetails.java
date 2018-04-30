@@ -87,7 +87,11 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        final int movieId = (Integer) getIntent().getExtras().get(getString(R.string.movie_id));
+        final int movieId = getIntent().getIntExtra(getString(R.string.movie_id), 1);
+        final String moviePoster = getIntent().getStringExtra(getString(R.string.movie_poster));
+        final String movieRelease = getIntent().getStringExtra(getString(R.string.movie_release_date));
+        final String movieVote = getIntent().getStringExtra(getString(R.string.movie_average_vote));
+        final String movieSynopsis = getIntent().getStringExtra(getString(R.string.movie_synopsis));
 
         List<MovieData> movieList;
         movieList = getIntent().getParcelableArrayListExtra(getString(R.string.movie_lsit));

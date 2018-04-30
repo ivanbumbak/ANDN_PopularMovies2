@@ -10,6 +10,18 @@
     <!-- Movie ID -->
     <string name="movie_id">movieID</string>
 
+    <!-- Movie poster -->
+    <string name="movie_poster">moviePoster</string>
+
+    <!-- Movie Release Date -->
+    <string name="movie_release_date">movieReleaseDate</string>
+
+    <!-- Movie average vote -->
+    <string name="movie_average_vote">movieAverageVote</string>
+
+    <!-- Movie synopsis -->
+    <string name="movie_synopsis">movieSynopsis</string>
+
     <!-- Movie parcel list -->
     <string name="movie_lsit">movieList</string>
 

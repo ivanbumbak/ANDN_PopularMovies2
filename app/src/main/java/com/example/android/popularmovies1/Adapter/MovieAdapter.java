@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 
 import com.example.android.popularmovies1.Data.MovieData;
@@ -29,7 +28,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private final static String SIZE = "w185/";
     private Context mContext;
     private List<MovieData> mMovieList = new ArrayList<>();
-    private AdapterView.OnItemClickListener itemListener;
+    private OnItemClickListener itemListener;
 
     public interface OnItemClickListener {
         void onItemClick(MovieData movieData);
@@ -54,15 +53,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         }
 
         public void bindMovies(final MovieData movieData, final OnItemClickListener listener) {
-            moviePoster.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-            if (movieData.getPoster() != null) {
-                Picasso.with(mContext).load(BASE_URL + SIZE + movieData.getPoster())
-                        .placeholder(R.drawable.clapboard)
-                        .error(R.drawable.error)
-                        .into(moviePoster);
-            }
-
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -81,9 +71,23 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     @Override
-    public void onBindViewHolder(MovieAdapter.MovieViewHolder holder, int position) {
+    public void onBindViewHolder(final MovieAdapter.MovieViewHolder holder, int position) {
         MovieData movieData = mMovieList.get(position);
-        holder.moviePoster.setImageResource(Integer.parseInt(movieData.getPoster()));
+
+        holder.moviePoster.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                itemListener.onItemClick(mMovieList.get(holder.getAdapterPosition()));
+            }
+        });
+
+        if (movieData.getPoster() != null) {
+            Picasso.with(mContext).load(BASE_URL + SIZE + movieData.getPoster())
+                    .placeholder(R.drawable.clapboard)
+                    .error(R.drawable.error)
+                    .into(holder.moviePoster);
+        }
     }
 
     @Override
