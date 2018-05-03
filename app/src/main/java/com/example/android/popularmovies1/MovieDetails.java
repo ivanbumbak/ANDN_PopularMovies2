@@ -44,7 +44,6 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
     private final static String SIZE = "w185/";
 
     private final static String SCROLL_STATE_KEY = "scrollStateKey";
-    private final static String REVIEW_RECYCLE_KEY = "reviewRecycleKey";
 
     private List<ReviewData> mReviewList;
     private List<TrailerData> mTrailerList;
@@ -161,7 +160,7 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
      * @param mSynopsis sets plot of the movie */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void displayMovieDetail() {
-        int movieId = (Integer) getIntent().getExtras().get(getString(R.string.movie_id));
+        final int movieId = getIntent().getIntExtra(getString(R.string.movie_id), 1);
         final String moviePoster = getIntent().getStringExtra(getString(R.string.movie_poster));
         final String movieTitle = getIntent().getStringExtra(getString(R.string.movie_title));
         final String movieRelease = getIntent().getStringExtra(getString(R.string.movie_release_date));
@@ -188,7 +187,7 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
 
     //Method for displaying movie trailers
     private void displayMovieTrailer() {
-        final int movieId = (Integer) getIntent().getExtras().get(getString(R.string.movie_id));
+        final int movieId = getIntent().getIntExtra(getString(R.string.movie_id), 1);
         final String moviePoster = getIntent().getStringExtra(getString(R.string.movie_poster));
         final String movieTitle = getIntent().getStringExtra(getString(R.string.movie_title));
         final String movieRelease = getIntent().getStringExtra(getString(R.string.movie_release_date));
@@ -236,7 +235,7 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
 
     //Method for displaying movie reviews
     public void displayMovieReview() {
-        int movieId = (Integer) getIntent().getExtras().get(getString(R.string.movie_id));
+        final int movieId = getIntent().getIntExtra(getString(R.string.movie_id), 1);
         final String moviePoster = getIntent().getStringExtra(getString(R.string.movie_poster));
         final String movieTitle = getIntent().getStringExtra(getString(R.string.movie_title));
         final String movieRelease = getIntent().getStringExtra(getString(R.string.movie_release_date));

@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -47,13 +46,12 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.recycle_view)
     RecyclerView recyclerView;
 
-    private List<MovieData> movieDataList = new ArrayList<>();
+    private List<MovieData> movieDataList;
     private MovieAdapter movieAdapter;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
     private MovieAdapter.OnItemClickListener mListener;
     private GridLayoutManager gridLayoutManager;
-    private Parcelable savedScrollState;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -62,24 +60,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        movieDataList = new ArrayList<>();
+
         preferences = this.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = preferences.edit();
         editor.apply();
 
-        //Initialisation of OnClickListener variable
-        mListener = new MovieAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(MovieData movieData) {
-                Intent intent = new Intent(MainActivity.this, MovieDetails.class);
-                intent.putExtra(getString(R.string.movie_id), movieData.getMovieId());
-                intent.putExtra(getString(R.string.movie_poster), movieData.getPoster());
-                intent.putExtra(getString(R.string.movie_title), movieData.getTitle());
-                intent.putExtra(getString(R.string.movie_release_date), movieData.getReleaseDate());
-                intent.putExtra(getString(R.string.movie_average_vote), movieData.getRating());
-                intent.putExtra(getString(R.string.movie_synopsis), movieData.getSynopsis());
-                getApplicationContext().startActivity(intent);
-            }
-        };
         movieAdapter = new MovieAdapter(this, movieDataList, mListener);
 
         if(savedInstanceState != null) {
@@ -89,9 +75,6 @@ public class MainActivity extends AppCompatActivity {
             recyclerView.scrollToPosition(position);
         } else {
             recyclerView.setAdapter(movieAdapter);
-            if(recyclerView.getLayoutManager() != null) {
-                recyclerView.getLayoutManager().onRestoreInstanceState(savedScrollState);
-            }
             if (preferences.getString(PREF_SORT_KEY, popular).equals(favorite)) {
                 displayFavMovies();
             } else {
@@ -107,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, MovieDetails.class);
                 intent.putExtra(getString(R.string.movie_id), movieData.getMovieId());
                 intent.putExtra(getString(R.string.movie_poster), movieData.getPoster());
+                intent.putExtra(getString(R.string.movie_title), movieData.getTitle());
                 intent.putExtra(getString(R.string.movie_release_date), movieData.getReleaseDate());
                 intent.putExtra(getString(R.string.movie_average_vote), movieData.getRating());
                 intent.putExtra(getString(R.string.movie_synopsis), movieData.getSynopsis());
@@ -121,18 +105,6 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(MOVIE_LIST_KEY, (ArrayList<MovieData>) movieDataList);
         outState.putInt(SCROLL_STATE_KEY, 4);
-    }
-
-    //onResume method
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (preferences.getString(PREF_SORT_KEY, popular).equals(favorite)) {
-            displayFavMovies();
-        } else {
-            getMovies();
-        }
     }
 
     //Method for getting movies via MovieAsyncTask class
@@ -229,7 +201,6 @@ public class MainActivity extends AppCompatActivity {
 
         Context context;
         MovieAdapter movieAdapter;
-        private List<MovieData> movieDataList = new ArrayList<>();
 
         MovieAdapter.OnItemClickListener listener = new MovieAdapter.OnItemClickListener() {
             @Override
