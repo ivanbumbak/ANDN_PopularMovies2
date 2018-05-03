@@ -85,10 +85,8 @@ public class MainActivity extends AppCompatActivity {
         if(savedInstanceState != null) {
             movieDataList = savedInstanceState.getParcelableArrayList(MOVIE_LIST_KEY);
             recyclerView.setAdapter(movieAdapter);
-            savedScrollState = savedInstanceState.getParcelable(SCROLL_STATE_KEY);
-            if(recyclerView.getLayoutManager() != null) {
-                recyclerView.getLayoutManager().onRestoreInstanceState(savedScrollState);
-            }
+            int position = savedInstanceState.getInt(SCROLL_STATE_KEY);
+            recyclerView.scrollToPosition(position);
         } else {
             recyclerView.setAdapter(movieAdapter);
             if(recyclerView.getLayoutManager() != null) {
@@ -122,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(MOVIE_LIST_KEY, (ArrayList<MovieData>) movieDataList);
-        outState.putParcelable(SCROLL_STATE_KEY, recyclerView.getLayoutManager().onSaveInstanceState());
+        outState.putInt(SCROLL_STATE_KEY, 4);
     }
 
     //onResume method
@@ -271,6 +269,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<MovieData> movieData) {
             movieDataList.clear();
+            movieDataList.addAll(movieData);
             movieAdapter = new MovieAdapter(context, movieDataList, listener);
             recyclerView.setAdapter(movieAdapter);
         }
