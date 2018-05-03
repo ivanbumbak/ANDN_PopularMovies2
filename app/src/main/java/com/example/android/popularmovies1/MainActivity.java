@@ -227,7 +227,10 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static class MovieAsyncTask extends AsyncTask<String, Void, List<MovieData>> {
+    public class MovieAsyncTask extends AsyncTask<String, Void, List<MovieData>> {
+
+        Context context;
+        MovieAdapter movieAdapter;
 
         public MovieAsyncTask() {
         }
