@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
     //Method for getting movies via MovieAsyncTask class
     public void getMovies() {
         String gettingChoice = preferences.getString(PREF_SORT_KEY, popular);
-        MovieAsyncTask movieAsyncTask = new MovieAsyncTask(this);
+        MovieAsyncTask movieAsyncTask = new MovieAsyncTask();
         movieAsyncTask.execute(gettingChoice);
         recyclerView.setAdapter(movieAdapter);
     }
@@ -208,14 +208,14 @@ public class MainActivity extends AppCompatActivity {
                 editor = getSharedPreferences(PREF_NAME, MODE_PRIVATE).edit();
                 editor.putString(PREF_SORT_KEY, popular);
                 editor.apply();
-                MovieAsyncTask asyncTaskPopular = new MovieAsyncTask(this);
+                MovieAsyncTask asyncTaskPopular = new MovieAsyncTask();
                 asyncTaskPopular.execute(popular);
                 break;
             case R.id.top_rated_sort:
                 editor = getSharedPreferences(PREF_NAME, MODE_PRIVATE).edit();
                 editor.putString(PREF_SORT_KEY, topRated);
                 editor.apply();
-                MovieAsyncTask asyncTaskTopRated = new MovieAsyncTask(this);
+                MovieAsyncTask asyncTaskTopRated = new MovieAsyncTask();
                 asyncTaskTopRated.execute(topRated);
                 break;
             case R.id.favorite_sort:
@@ -231,6 +231,25 @@ public class MainActivity extends AppCompatActivity {
 
         Context context;
         MovieAdapter movieAdapter;
+        private List<MovieData> movieDataList = new ArrayList<>();
+        MovieData movieData;
+
+        @BindView(R.id.recycle_view)
+        RecyclerView recyclerView;
+
+        MovieAdapter.OnItemClickListener listener = new MovieAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(MovieData movieData) {
+                Intent intent = new Intent(MainActivity.this, MovieDetails.class);
+                intent.putExtra(getString(R.string.movie_id), movieData.getMovieId());
+                intent.putExtra(getString(R.string.movie_poster), movieData.getPoster());
+                intent.putExtra(getString(R.string.movie_title), movieData.getTitle());
+                intent.putExtra(getString(R.string.movie_release_date), movieData.getReleaseDate());
+                intent.putExtra(getString(R.string.movie_average_vote), movieData.getRating());
+                intent.putExtra(getString(R.string.movie_synopsis), movieData.getSynopsis());
+                getApplicationContext().startActivity(intent);
+            }
+        };
 
         public MovieAsyncTask() {
         }
@@ -256,8 +275,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<MovieData> movieData) {
             movieDataList.clear();
-            movieDataList = output;
-            movieAdapter = new MovieAdapter(this, movieDataList, mListener);
+            movieAdapter = new MovieAdapter(context, movieDataList, listener);
             recyclerView.setAdapter(movieAdapter);
         }
     }
