@@ -232,10 +232,6 @@ public class MainActivity extends AppCompatActivity {
         Context context;
         MovieAdapter movieAdapter;
         private List<MovieData> movieDataList = new ArrayList<>();
-        MovieData movieData;
-
-        @BindView(R.id.recycle_view)
-        RecyclerView recyclerView;
 
         MovieAdapter.OnItemClickListener listener = new MovieAdapter.OnItemClickListener() {
             @Override
