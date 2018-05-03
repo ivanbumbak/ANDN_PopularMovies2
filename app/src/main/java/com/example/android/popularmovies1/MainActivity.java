@@ -79,8 +79,14 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
             movieDataList = savedInstanceState.getParcelableArrayList(MOVIE_LIST_KEY);
             recyclerView.setAdapter(movieAdapter);
             savedScrollState = savedInstanceState.getParcelable(SCROLL_STATE_KEY);
+            if(recyclerView.getLayoutManager() != null) {
+                recyclerView.getLayoutManager().onRestoreInstanceState(savedScrollState);
+            }
         } else {
             recyclerView.setAdapter(movieAdapter);
+            if(recyclerView.getLayoutManager() != null) {
+                recyclerView.getLayoutManager().onRestoreInstanceState(savedScrollState);
+            }
             if (preferences.getString(PREF_SORT_KEY, popular).equals(favorite)) {
                 displayFavMovies();
             } else {
@@ -109,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(MOVIE_LIST_KEY, (ArrayList<MovieData>) movieDataList);
-        outState.putParcelable(SCROLL_STATE_KEY, gridLayoutManager.onSaveInstanceState());
+        outState.putParcelable(SCROLL_STATE_KEY, recyclerView.getLayoutManager().onSaveInstanceState());
     }
 
     //onResume method
