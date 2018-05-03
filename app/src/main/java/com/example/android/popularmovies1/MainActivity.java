@@ -4,6 +4,7 @@ package com.example.android.popularmovies1;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -82,7 +83,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        gridLayoutManager = new GridLayoutManager(this, 2);
+        if(this.getResources().getConfiguration()
+                .orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            gridLayoutManager = new GridLayoutManager(this, 3);
+        } else if(this.getResources().getConfiguration()
+                .orientation == Configuration.ORIENTATION_PORTRAIT) {
+            gridLayoutManager = new GridLayoutManager(this, 2);
+        }
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(new MovieAdapter(this, movieDataList, new MovieAdapter.OnItemClickListener() {
             @Override
