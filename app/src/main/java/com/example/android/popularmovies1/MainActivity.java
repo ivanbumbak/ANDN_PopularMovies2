@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -12,21 +13,26 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.android.popularmovies1.Adapter.MovieAdapter;
+import com.example.android.popularmovies1.Data.JsonData;
 import com.example.android.popularmovies1.Data.MovieData;
 import com.example.android.popularmovies1.Database.FavoriteContract;
-import com.example.android.popularmovies1.Utils.MovieAsyncTask;
+import com.example.android.popularmovies1.Utils.NetworkUtils;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements MovieAsyncTask.AsyncResponse {
+public class MainActivity extends AppCompatActivity {
 
     private final static String popular = "popular";
     private final static String topRated = "top_rated";
@@ -131,15 +137,6 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
         }
     }
 
-    //Output method for displaying movies in GridView
-    @Override
-    public void finished(List<MovieData> output) {
-        movieDataList.clear();
-        movieDataList = output;
-        movieAdapter = new MovieAdapter(this, movieDataList, mListener);
-        recyclerView.setAdapter(movieAdapter);
-    }
-
     //Method for getting movies via MovieAsyncTask class
     public void getMovies() {
         String gettingChoice = preferences.getString(PREF_SORT_KEY, popular);
@@ -228,5 +225,37 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
                 displayFavMovies();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public static class MovieAsyncTask extends AsyncTask<String, Void, List<MovieData>> {
+
+        public MovieAsyncTask() {
+        }
+
+        @Override
+        protected List<MovieData> doInBackground(String... strings) {
+            String rawData = "";
+            List<MovieData> movieList = new ArrayList<>();
+            try {
+                rawData = NetworkUtils.getResponseFromHttpRequest(NetworkUtils.buildUrl(strings[0]));
+                movieList = JsonData.getDataFromJson(rawData);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("MovieAsyncTask", "Error in MovieAsyncTask");
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.e("JSONAsync", "JSON problem");
+            }
+
+            return movieList;
+        }
+
+        @Override
+        protected void onPostExecute(List<MovieData> movieData) {
+            movieDataList.clear();
+            movieDataList = output;
+            movieAdapter = new MovieAdapter(this, movieDataList, mListener);
+            recyclerView.setAdapter(movieAdapter);
+        }
     }
 }
