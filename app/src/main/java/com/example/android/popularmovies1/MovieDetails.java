@@ -172,8 +172,6 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
         movieData = new MovieData(movieId, moviePoster, movieTitle,
                 movieRelease, movieVote, movieSynopsis);
 
-        String title = movieData.getTitle();
-
         Picasso.with(mContext).load(BASE_URL + SIZE +
                 movieData.getPoster()).into(mMoviePoster);
         mMovieTitle.setText(movieData.getTitle());
@@ -181,7 +179,7 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
         mAverageVote.setText(Double.toString(movieData.getRating()));
         mSynopsis.setText(movieData.getSynopsis());
 
-        if(isFav(title)) {
+        if(isFav(movieTitle)) {
             mFavoriteImage.setImageResource(R.drawable.fav_ic_selected);
         } else {
             mFavoriteImage.setImageResource(R.drawable.fav_ic_no);

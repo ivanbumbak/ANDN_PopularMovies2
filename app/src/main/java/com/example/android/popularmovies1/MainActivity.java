@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements MovieAsyncTask.As
                 Intent intent = new Intent(MainActivity.this, MovieDetails.class);
                 intent.putExtra(getString(R.string.movie_id), movieData.getMovieId());
                 intent.putExtra(getString(R.string.movie_poster), movieData.getPoster());
+                intent.putExtra(getString(R.string.movie_title), movieData.getTitle());
                 intent.putExtra(getString(R.string.movie_release_date), movieData.getReleaseDate());
                 intent.putExtra(getString(R.string.movie_average_vote), movieData.getRating());
                 intent.putExtra(getString(R.string.movie_synopsis), movieData.getSynopsis());
