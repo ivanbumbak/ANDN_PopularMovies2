@@ -13,6 +13,9 @@
     <!-- Movie poster -->
     <string name="movie_poster">moviePoster</string>
 
+    <!-- Movie title -->
+    <string name="movie_title">movieTitle</string>
+
     <!-- Movie Release Date -->
     <string name="movie_release_date">movieReleaseDate</string>
 

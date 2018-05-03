@@ -89,14 +89,24 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
 
         final int movieId = getIntent().getIntExtra(getString(R.string.movie_id), 1);
         final String moviePoster = getIntent().getStringExtra(getString(R.string.movie_poster));
+        final String movieTitle = getIntent().getStringExtra(getString(R.string.movie_title));
         final String movieRelease = getIntent().getStringExtra(getString(R.string.movie_release_date));
-        final String movieVote = getIntent().getStringExtra(getString(R.string.movie_average_vote));
+        final double movieVote = getIntent().getDoubleExtra(getString(R.string.movie_average_vote),
+                0.0);
         final String movieSynopsis = getIntent().getStringExtra(getString(R.string.movie_synopsis));
 
-        List<MovieData> movieList;
-        movieList = getIntent().getParcelableArrayListExtra(getString(R.string.movie_lsit));
+        movieData = new MovieData(movieId, moviePoster, movieTitle,
+                movieRelease, movieVote, movieSynopsis);
 
-        movieData = movieList.get(movieId);
+        int id = movieData.getMovieId();
+        String trailerId = String.valueOf(id);
+        String reviewId = String.valueOf(id);
+
+        TrailerAsyncTask trailerAsyncTask = new TrailerAsyncTask(this);
+        trailerAsyncTask.execute(trailerId);
+
+        ReviewAsyncTask reviewAsyncTask = new ReviewAsyncTask(this);
+        reviewAsyncTask.execute(reviewId);
 
         //Calling method for displaying movie details
         displayMovieDetail();
@@ -152,11 +162,16 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void displayMovieDetail() {
         int movieId = (Integer) getIntent().getExtras().get(getString(R.string.movie_id));
+        final String moviePoster = getIntent().getStringExtra(getString(R.string.movie_poster));
+        final String movieTitle = getIntent().getStringExtra(getString(R.string.movie_title));
+        final String movieRelease = getIntent().getStringExtra(getString(R.string.movie_release_date));
+        final double movieVote = getIntent().getDoubleExtra(getString(R.string.movie_average_vote),
+                0.0);
+        final String movieSynopsis = getIntent().getStringExtra(getString(R.string.movie_synopsis));
 
-        List<MovieData> movieList;
-        movieList = getIntent().getParcelableArrayListExtra(getString(R.string.movie_lsit));
+        movieData = new MovieData(movieId, moviePoster, movieTitle,
+                movieRelease, movieVote, movieSynopsis);
 
-        movieData = movieList.get(movieId);
         String title = movieData.getTitle();
 
         Picasso.with(mContext).load(BASE_URL + SIZE +
@@ -176,11 +191,16 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
     //Method for displaying movie trailers
     private void displayMovieTrailer() {
         final int movieId = (Integer) getIntent().getExtras().get(getString(R.string.movie_id));
+        final String moviePoster = getIntent().getStringExtra(getString(R.string.movie_poster));
+        final String movieTitle = getIntent().getStringExtra(getString(R.string.movie_title));
+        final String movieRelease = getIntent().getStringExtra(getString(R.string.movie_release_date));
+        final double movieVote = getIntent().getDoubleExtra(getString(R.string.movie_average_vote),
+                0.0);
+        final String movieSynopsis = getIntent().getStringExtra(getString(R.string.movie_synopsis));
 
-        List<MovieData> movieList;
-        movieList = getIntent().getParcelableArrayListExtra(getString(R.string.movie_lsit));
+        movieData = new MovieData(movieId, moviePoster, movieTitle,
+                movieRelease, movieVote, movieSynopsis);
 
-        final MovieData movieData = movieList.get(movieId);
         int id = movieData.getMovieId();
         String trailerId = String.valueOf(id);
 
@@ -219,11 +239,16 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
     //Method for displaying movie reviews
     public void displayMovieReview() {
         int movieId = (Integer) getIntent().getExtras().get(getString(R.string.movie_id));
+        final String moviePoster = getIntent().getStringExtra(getString(R.string.movie_poster));
+        final String movieTitle = getIntent().getStringExtra(getString(R.string.movie_title));
+        final String movieRelease = getIntent().getStringExtra(getString(R.string.movie_release_date));
+        final double movieVote = getIntent().getDoubleExtra(getString(R.string.movie_average_vote),
+                0.0);
+        final String movieSynopsis = getIntent().getStringExtra(getString(R.string.movie_synopsis));
 
-        List<MovieData> movieList;
-        movieList = getIntent().getParcelableArrayListExtra(getString(R.string.movie_lsit));
+        movieData = new MovieData(movieId, moviePoster, movieTitle,
+                movieRelease, movieVote, movieSynopsis);
 
-        MovieData movieData = movieList.get(movieId);
         int id = movieData.getMovieId();
         String reviewId = String.valueOf(id);
 
