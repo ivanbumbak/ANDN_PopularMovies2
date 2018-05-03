@@ -84,8 +84,6 @@ public class MovieDetails extends AppCompatActivity implements ReviewAsyncTask.R
         setContentView(R.layout.activity_movie_details);
         ButterKnife.bind(this);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         final int movieId = getIntent().getIntExtra(getString(R.string.movie_id), 1);
         final String moviePoster = getIntent().getStringExtra(getString(R.string.movie_poster));
         final String movieTitle = getIntent().getStringExtra(getString(R.string.movie_title));
