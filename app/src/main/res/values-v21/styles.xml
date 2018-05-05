@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="PopularMovies" parent="android:Theme.WithActionBar">
+    <style name="PopularMovies" parent="AppTheme">
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
