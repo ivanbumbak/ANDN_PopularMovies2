@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
     private MovieAdapter.OnItemClickListener mListener;
-    private GridLayoutManager gridLayoutManager;
+    private GridLayoutManager mGridLayoutManager;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -62,6 +62,20 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         movieDataList = new ArrayList<>();
+
+        mListener = new MovieAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(MovieData movieData) {
+                Intent intent = new Intent(MainActivity.this, MovieDetails.class);
+                intent.putExtra(getString(R.string.movie_id), movieData.getMovieId());
+                intent.putExtra(getString(R.string.movie_poster), movieData.getPoster());
+                intent.putExtra(getString(R.string.movie_title), movieData.getTitle());
+                intent.putExtra(getString(R.string.movie_release_date), movieData.getReleaseDate());
+                intent.putExtra(getString(R.string.movie_average_vote), movieData.getRating());
+                intent.putExtra(getString(R.string.movie_synopsis), movieData.getSynopsis());
+                getApplicationContext().startActivity(intent);
+            }
+        };
 
         preferences = this.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = preferences.edit();
@@ -73,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
             movieDataList = savedInstanceState.getParcelableArrayList(MOVIE_LIST_KEY);
             recyclerView.setAdapter(movieAdapter);
             int position = savedInstanceState.getInt(SCROLL_STATE_KEY);
-            recyclerView.scrollToPosition(position);
+            recyclerView.smoothScrollToPosition(position);
         } else {
             recyclerView.setAdapter(movieAdapter);
             if (preferences.getString(PREF_SORT_KEY, popular).equals(favorite)) {
@@ -83,15 +97,18 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        //Making different UI for portrait and for landscape orientation
         if(this.getResources().getConfiguration()
                 .orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            gridLayoutManager = new GridLayoutManager(this, 3);
+            mGridLayoutManager = new GridLayoutManager(this, 3);
         } else if(this.getResources().getConfiguration()
                 .orientation == Configuration.ORIENTATION_PORTRAIT) {
-            gridLayoutManager = new GridLayoutManager(this, 2);
+            mGridLayoutManager = new GridLayoutManager(this, 2);
         }
-        recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.setAdapter(new MovieAdapter(this, movieDataList, new MovieAdapter.OnItemClickListener() {
+
+        recyclerView.setLayoutManager(mGridLayoutManager);
+        recyclerView.setAdapter(new MovieAdapter(this, movieDataList,
+                new MovieAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(MovieData movieData) {
                 Intent intent = new Intent(MainActivity.this, MovieDetails.class);
@@ -112,6 +129,19 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(MOVIE_LIST_KEY, (ArrayList<MovieData>) movieDataList);
         outState.putInt(SCROLL_STATE_KEY, 4);
+    }
+
+    //onResume method
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(preferences.getString(PREF_SORT_KEY,
+                popular).equals(favorite)) {
+            displayFavMovies();
+        } else {
+            getMovies();
+        }
     }
 
     //Method for getting movies via MovieAsyncTask class
@@ -222,9 +252,6 @@ public class MainActivity extends AppCompatActivity {
                 getApplicationContext().startActivity(intent);
             }
         };
-
-        public MovieAsyncTask() {
-        }
 
         @Override
         protected List<MovieData> doInBackground(String... strings) {

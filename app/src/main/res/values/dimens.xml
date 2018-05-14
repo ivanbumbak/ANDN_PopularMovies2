@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Padding and margin dimensions -->
+    <dimen name="recycle_column_width">120dp</dimen>
+    <dimen name="padding_margin_16dp">16dp</dimen>
+    <dimen name="padding_margin_8dp">8dp</dimen>
+    <dimen name="padding_margin_4dp">4dp</dimen>
+
+    <!-- Text, labels, titles, etc. sizes -->
+    <dimen name="label_size">20sp</dimen>
+    <dimen name="title_size">25sp</dimen>
+    <dimen name="regular_text_size">20sp</dimen>
+    <dimen name="label_size_land">24sp</dimen>
+    <dimen name="title_size_land">35sp</dimen>
+    <dimen name="regular_text_size_land">24sp</dimen>
+</resources>
