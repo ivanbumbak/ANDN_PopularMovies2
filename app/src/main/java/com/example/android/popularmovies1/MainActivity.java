@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     private MovieAdapter.OnItemClickListener mListener;
     private GridLayoutManager mGridLayoutManager;
+    Parcelable savedScrollState;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -86,10 +88,15 @@ public class MainActivity extends AppCompatActivity {
         if(savedInstanceState != null) {
             movieDataList = savedInstanceState.getParcelableArrayList(MOVIE_LIST_KEY);
             recyclerView.setAdapter(movieAdapter);
-            int position = savedInstanceState.getInt(SCROLL_STATE_KEY);
-            recyclerView.smoothScrollToPosition(position);
+            savedScrollState = savedInstanceState.getParcelable(SCROLL_STATE_KEY);
+            if(recyclerView.getLayoutManager() != null) {
+                recyclerView.getLayoutManager().onRestoreInstanceState(savedScrollState);
+            }
         } else {
             recyclerView.setAdapter(movieAdapter);
+            if(recyclerView.getLayoutManager() != null) {
+                recyclerView.getLayoutManager().onRestoreInstanceState(savedScrollState);
+            }
             if (preferences.getString(PREF_SORT_KEY, popular).equals(favorite)) {
                 displayFavMovies();
             } else {
@@ -97,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        //Making different UI for portrait and for landscape orientation
+        //Making different UI layout for portrait and for landscape orientation
         if(this.getResources().getConfiguration()
                 .orientation == Configuration.ORIENTATION_LANDSCAPE) {
             mGridLayoutManager = new GridLayoutManager(this, 3);
@@ -128,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(MOVIE_LIST_KEY, (ArrayList<MovieData>) movieDataList);
-        outState.putInt(SCROLL_STATE_KEY, 4);
+        outState.putParcelable(SCROLL_STATE_KEY, recyclerView.getLayoutManager().onSaveInstanceState());
     }
 
     //onResume method
@@ -276,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
             movieDataList.clear();
             movieDataList.addAll(movieData);
             movieAdapter = new MovieAdapter(context, movieDataList, listener);
+            recyclerView.getLayoutManager().onRestoreInstanceState(savedScrollState);
             recyclerView.setAdapter(movieAdapter);
         }
     }
